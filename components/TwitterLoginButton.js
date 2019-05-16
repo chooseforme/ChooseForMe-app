@@ -47,15 +47,12 @@ export default class TwitterLoginButton extends React.Component {
   }
 
   onClose = (e) => {
-    this.props._isLoggingIn(false);
     DeviceEventEmitter.emit('showToast', "Login Cancelled");
 
     console.log('press close button');
   }
 
   onError = (err) => {
-    
-    this.props._isLoggingIn(false);
     DeviceEventEmitter.emit('showToast', err.message);
     console.log(err);
   }
