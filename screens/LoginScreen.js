@@ -7,27 +7,29 @@ import {
     TouchableOpacity,
     View,
     StatusBar,
-    Alert
+    Alert,
+    ActivityIndicator,
 } from 'react-native';
 import { Container, Header, Content, Text, Button } from 'native-base';
 import FBLoginButton from '../components/FBLoginButton';
 import TwitterButton from '../components/TwitterLoginButton';
 import GoogleButton from '../components/GoogleLoginButtons';
 import * as firebase from 'firebase';
-import Toast, {DURATION} from 'react-native-easy-toast'
 import { DeviceEventEmitter } from 'react-native';
 
 export default class LoginScreen extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoggingIn: false
+        };
+    }
+    
     static navigationOptions = {
         header: null,
     };
     
-    componentDidMount() {
-        this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
-        this.refs.toast.show(text);
-        });
-        }
-        
     componentWillMount() {
         // Add listener here
         this.unsubscribe = firebase.auth().onAuthStateChanged(user => {
@@ -43,11 +45,44 @@ export default class LoginScreen extends React.Component {
 
     componentWillUnmount() {
         // Don't forget to unsubscribe when the component unmounts
-        if (this.listener) {
-            this.listener.remove();
-        }
         this.unsubscribe();
     }
+
+    _isLoggingIn = (loading) => {
+        this.setState({
+            isLoggingIn: loading
+          })
+    }
+
+    _renderbutton(){
+    if(!this.state.isLoggingIn){
+        return <View
+        style={{
+            flex: 1,
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+        }}
+    >
+        <FBLoginButton _isLoggingIn={this._isLoggingIn}/>
+        <TwitterButton _isLoggingIn={this._isLoggingIn}/>
+        <GoogleButton _isLoggingIn={this._isLoggingIn}/>
+        <Text note>Hard to choose one...</Text>
+    </View>
+    }
+    else{
+        return<View
+        style={{
+            flex: 1,
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+        }}
+    >
+        <ActivityIndicator size="large" color="#ffffff" />
+        <Text note>Logging In...</Text>
+    </View>
+    }
+}
+
 
     render() {
         return (
@@ -65,20 +100,8 @@ export default class LoginScreen extends React.Component {
                             }
                         />
                     </View>
-                    <View
-                        style={{
-                            flex: 1,
-                            justifyContent: 'flex-start',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <FBLoginButton refs={this.refs}/>
-                        <TwitterButton />
-                        <GoogleButton />
-                        <Text note>Hard to choose one...</Text>
-                    </View>
+                    {this._renderbutton()}
                 </View>
-                <Toast ref="toast"/>
             </Container>
         );
     }
