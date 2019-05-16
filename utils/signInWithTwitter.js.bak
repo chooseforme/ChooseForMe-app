@@ -1,0 +1,27 @@
+import twitter, {auth} from 'react-native-twitter';
+import * as firebase from 'firebase';
+import Expo, { AuthSession } from 'expo';
+
+export default async function signInWithTwitter() {
+    const consumerKey = "8MvB7VPNA0nlMTn9AfojxP3Hc";
+    const consumerSecret = "Z4FgyFDgOP0fJgxdxQ80ffoCLFoldurAcMKlrpiJ54S8U8Lz3i";
+    const callbackUrl = "https://chooseforme-96e4c.firebaseapp.com/__/auth/handler";
+    auth({ consumerKey, consumerSecret }, callbackUrl)
+		.then(result => {
+            alert('1');
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function(){
+			const { accessToken, accessTokenSecret } = result;
+			const credential = firebase.auth.TwitterAuthProvider.credential({
+				token: accessToken,
+				secret: accessTokenSecret
+			});
+
+			firebase
+				.auth()
+				.signInAndRetrieveDataWithCredential(credential)
+				.then(alert(success))
+				.catch(error=>alert(error));
+		})
+        .catch(error => alert(error));
+    }).catch(error => alert(error));
+}
