@@ -5,6 +5,8 @@ import AppNavigator from './navigation/AppNavigator';
 import * as firebase from 'firebase'  // Should not be used elsewhere in the project
 import twitter from 'react-native-simple-twitter';
 import Toast, {DURATION} from 'react-native-easy-toast';
+import { Provider } from 'react-redux';
+import { store } from './redux/app-redux';
 
 export default class App extends React.Component {
   componentWillMount(){
@@ -39,11 +41,13 @@ export default class App extends React.Component {
       );
     } else {
       return (
+        <Provider store={store}>
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           <AppNavigator />
           <Toast ref="toast"/>
         </View>
+        </Provider>
       );
     }
   }

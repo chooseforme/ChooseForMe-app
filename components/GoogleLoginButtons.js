@@ -2,15 +2,35 @@ import React, { Component } from 'react';
 import { View, TouchableOpacity,DeviceEventEmitter, Alert  } from 'react-native';
 import { Text } from 'native-base';
 import * as firebase from 'firebase';
+import { connect } from 'react-redux';
+import { setLoggingIn } from '../redux/app-redux';
 
-export default class FBLoginButton extends Component {
+
+const mapStateToProps = (state) => {
+  return {
+
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setLoggingIn: (logging) => { dispatch(setLoggingIn(logging)) }
+  };
+}
+
+class GoogleLoginButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
     };
   }
+  
+  onSetLoggingIn = (loggingin) => {
+    this.props.setLoggingIn(loggingin);
+  }
 
   async _loginWithGoogle() {
+    this.onSetLoggingIn(true);
     try {
       const result = await Expo.Google.logInAsync({
         androidClientId: Expo.Constants.manifest.extra.ios.clientId,
@@ -19,7 +39,6 @@ export default class FBLoginButton extends Component {
       });
   
       if (result.type === "success") {
-        this.props._isLoggingIn(true);
         firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function(){
         const { idToken, accessToken } = result;
         const credential = firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
@@ -31,23 +50,23 @@ export default class FBLoginButton extends Component {
 
           })
           .catch(error => {
-            this.props._isLoggingIn(false);
             DeviceEventEmitter.emit('showToast', error.message);
             console.log("firebase cred err:", error);
           });
         }).catch(error=> {
-          this.props._isLoggingIn(false);
           DeviceEventEmitter.emit('showToast', error.message);
           console.log(error)
         });
        
       } else {
         DeviceEventEmitter.emit('showToast', "Login Cancelled");
+        this.onSetLoggingIn(false);
         return { cancelled: true };
       }
     } catch (err) {
       DeviceEventEmitter.emit('showToast', err.message);
       console.log("err:", err);
+      this.onSetLoggingIn(false);
     }
   }
 
@@ -68,3 +87,5 @@ export default class FBLoginButton extends Component {
   }
 }
 
+
+export default connect(mapStateToProps, mapDispatchToProps)( GoogleLoginButton );

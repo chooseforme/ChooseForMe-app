@@ -20,7 +20,10 @@
     "react-native-easy-toast": "^1.2.0",
     "react-native-simple-twitter": "^2.3.0",
     "react-native-twitter": "^0.2.1",
-    "react-navigation": "^3.0.9"
+    "react-navigation": "^3.0.9",
+    "react-redux": "^6.0.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0",

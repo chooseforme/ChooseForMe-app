@@ -9,8 +9,24 @@ import {
 } from 'react-native';
 import * as firebase from 'firebase';
 import { Button, Text } from 'native-base';
+import { connect } from 'react-redux';
+import { setLoggingIn } from '../redux/app-redux';
 
-export default class TwitterLoginButton extends React.Component {
+
+
+const mapStateToProps = (state) => {
+  return {
+
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setLoggingIn: (logging) => { dispatch(setLoggingIn(logging)) }
+  };
+}
+
+class TwitterLoginButton extends React.Component {
   static navigationOptions = {
     header: null,
   }
@@ -19,23 +35,23 @@ export default class TwitterLoginButton extends React.Component {
     super(props);
   }
 
-  async componentDidMount() {
-
+  onSetLoggingIn = (loggingin) => {
+    this.props.setLoggingIn(loggingin);
   }
 
   onGetAccessToken = ({ oauth_token: token, oauth_token_secret: tokenSecret }) => {
-    this.props._isLoggingIn(true);
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function () {
+    this.onSetLoggingIn(true);
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(()=> {
       const credential = firebase.auth.TwitterAuthProvider.credential(token, tokenSecret);
       firebase.auth().signInWithCredential(credential).then().catch(error => {
         console.log(error);
-        this.props._isLoggingIn(false);
         DeviceEventEmitter.emit('showToast', error.message);
+        this.onSetLoggingIn(false);
       });
 
     }).catch(error => {
       console.log(error);
-      this.props._isLoggingIn(false);
+      this.onSetLoggingIn(false);
     });
   }
 
@@ -44,11 +60,11 @@ export default class TwitterLoginButton extends React.Component {
   }
 
   onPress = (e) => {
+
   }
 
   onClose = (e) => {
     DeviceEventEmitter.emit('showToast', "Login Cancelled");
-
     console.log('press close button');
   }
 
@@ -81,3 +97,5 @@ export default class TwitterLoginButton extends React.Component {
     );
   }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(TwitterLoginButton);

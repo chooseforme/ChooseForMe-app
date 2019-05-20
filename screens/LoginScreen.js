@@ -16,20 +16,33 @@ import TwitterButton from '../components/TwitterLoginButton';
 import GoogleButton from '../components/GoogleLoginButtons';
 import * as firebase from 'firebase';
 import { DeviceEventEmitter } from 'react-native';
+import { connect } from 'react-redux';
 
-export default class LoginScreen extends React.Component {
+
+const mapStateToProps = (state) => {
+    return {
+        loggingin: state.loggingin,
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+    };
+}
+
+class LoginScreen extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            isLoggingIn: false
+            loggingIn: this.props.loggingin,
         };
     }
-    
+
     static navigationOptions = {
         header: null,
     };
-    
+
     componentWillMount() {
         // Add listener here
         this.unsubscribe = firebase.auth().onAuthStateChanged(user => {
@@ -48,45 +61,38 @@ export default class LoginScreen extends React.Component {
         this.unsubscribe();
     }
 
-    _isLoggingIn = (loading) => {
-        this.setState({
-            isLoggingIn: loading
-          })
+    _renderbutton() {
+        if (!this.props.loggingin) {
+            return <View
+                style={{
+                    flex: 1,
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                }}
+            >
+                <FBLoginButton />
+                <TwitterButton />
+                <GoogleButton />
+                <Text note>Hard to choose one...</Text>
+            </View>
+        }
+        else {
+            return <View
+                style={{
+                    flex: 1,
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                }}
+            >
+                <ActivityIndicator size="large" color="#ffffff" />
+                <Text note>Logging In...</Text>
+            </View>
+        }
     }
-
-    _renderbutton(){
-    if(!this.state.isLoggingIn){
-        return <View
-        style={{
-            flex: 1,
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-        }}
-    >
-        <FBLoginButton _isLoggingIn={this._isLoggingIn}/>
-        <TwitterButton _isLoggingIn={this._isLoggingIn}/>
-        <GoogleButton _isLoggingIn={this._isLoggingIn}/>
-        <Text note>Hard to choose one...</Text>
-    </View>
-    }
-    else{
-        return<View
-        style={{
-            flex: 1,
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-        }}
-    >
-        <ActivityIndicator size="large" color="#ffffff" />
-        <Text note>Logging In...</Text>
-    </View>
-    }
-}
-
 
     render() {
         return (
-            <Container style={{marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,}}>
+            <Container style={{ marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, }}>
                 <View style={{
                     flex: 1,
                     backgroundColor: '#281c3c',
@@ -106,3 +112,5 @@ export default class LoginScreen extends React.Component {
         );
     }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

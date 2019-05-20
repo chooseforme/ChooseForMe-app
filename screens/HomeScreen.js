@@ -12,27 +12,35 @@ import { WebBrowser } from 'expo';
 import { Button } from 'native-base';
 import { MonoText } from '../components/StyledText';
 import * as firebase from 'firebase';
+import { connect } from 'react-redux';
+import { setLoggingIn } from '../redux/app-redux';
 
-export default class HomeScreen extends React.Component {
+const mapStateToProps = (state) => {
+  return {
+
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setLoggingIn: (logging) => { dispatch(setLoggingIn(logging)) }
+  };
+}
+
+
+class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+
+  componentDidMount() {
+    this.props.setLoggingIn(false);
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-            <Image
-              source={
-                __DEV__
-                  ? require('../assets/images/robot-dev.png')
-                  : require('../assets/images/robot-prod.png')
-              }
-              style={styles.welcomeImage}
-            />
-          </View>
-
           <View style={styles.getStartedContainer}>
             {this._maybeRenderDevelopmentModeWarning()}
             <Text>{firebase.auth().currentUser.displayName}</Text>
@@ -43,7 +51,6 @@ export default class HomeScreen extends React.Component {
             <Button onPress={() => {
               firebase.auth().signOut().then(()=> {
                 // Sign-out successful.
-                alert("logout");
                 this.props.navigation.navigate('Auth');
               }).catch(function (error) {
                 // An error happened.
@@ -52,31 +59,8 @@ export default class HomeScreen extends React.Component {
             }}>
               <Text>SignOut</Text>
             </Button>
-            <Text style={styles.getStartedText}>Get started by opening</Text>
-
-            <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
-            </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-            </TouchableOpacity>
           </View>
         </ScrollView>
-
-        <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-          <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
-          </View>
-        </View>
       </View>
     );
   }
@@ -203,3 +187,5 @@ const styles = StyleSheet.create({
     color: '#2e78b7',
   },
 });
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
