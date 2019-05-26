@@ -1,15 +1,5 @@
 import React from 'react';
-import {
-    Image,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    TouchableOpacity,
-    View,
-    StatusBar,
-    Alert,
-    ActivityIndicator,
-} from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, TouchableOpacity, View, StatusBar, Alert, ActivityIndicator, } from 'react-native';
 import { Container, Header, Content, Text, Button } from 'native-base';
 import FBLoginButton from '../components/FBLoginButton';
 import TwitterButton from '../components/TwitterLoginButton';

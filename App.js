@@ -1,15 +1,16 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View ,DeviceEventEmitter} from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, DeviceEventEmitter } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import * as firebase from 'firebase'  // Should not be used elsewhere in the project
 import twitter from 'react-native-simple-twitter';
-import Toast, {DURATION} from 'react-native-easy-toast';
+import Toast, { DURATION } from 'react-native-easy-toast';
 import { Provider } from 'react-redux';
 import { store } from './redux/app-redux';
 
+
 export default class App extends React.Component {
-  componentWillMount(){
+  componentWillMount() {
     firebase.initializeApp(Expo.Constants.manifest.extra.firebase);
   }
 
@@ -17,16 +18,16 @@ export default class App extends React.Component {
     isLoadingComplete: false,
   };
 
-  
+
   componentWillUnmount() {
     // Don't forget to unsubscribe when the component unmounts
     if (this.listener) {
-        this.listener.remove();
+      this.listener.remove();
     }
   }
   componentDidMount() {
     this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
-    this.refs.toast.show(text, 5000);
+      this.refs.toast.show(text, 5000);
     });
   }
 
@@ -42,11 +43,11 @@ export default class App extends React.Component {
     } else {
       return (
         <Provider store={store}>
-        <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator />
-          <Toast ref="toast"/>
-        </View>
+          <View style={styles.container}>
+            {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+            <AppNavigator />
+            <Toast ref="toast" />
+          </View>
         </Provider>
       );
     }
@@ -56,7 +57,7 @@ export default class App extends React.Component {
     return Promise.all([
       Asset.loadAsync([
         require('./assets/images/robot-dev.png'),
-        require('./assets/images/robot-prod.png'),       
+        require('./assets/images/robot-prod.png'),
         require('./assets/images/logo.png'),
         require('./assets/images/bg-logo.png'),
         require('./assets/images/logo-2.png'),

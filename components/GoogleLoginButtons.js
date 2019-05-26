@@ -24,7 +24,7 @@ class GoogleLoginButton extends Component {
     this.state = {
     };
   }
-  
+
   onSetLoggingIn = (loggingin) => {
     this.props.setLoggingIn(loggingin);
   }
@@ -59,7 +59,7 @@ class GoogleLoginButton extends Component {
         });
        
       } else {
-        DeviceEventEmitter.emit('showToast', "Login Cancelled");
+        //DeviceEventEmitter.emit('showToast', "Login Cancelled");
         this.onSetLoggingIn(false);
         return { cancelled: true };
       }

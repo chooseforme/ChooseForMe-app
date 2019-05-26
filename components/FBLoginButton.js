@@ -47,7 +47,7 @@ class FBLoginButton extends Component {
 
     switch (type) {
       case 'success': {
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function () {
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
           const credential = firebase.auth.FacebookAuthProvider.credential(token);
           firebase.auth().signInWithCredential(credential).then(res => {
             // user res, create your user, do whatever you want
@@ -55,6 +55,8 @@ class FBLoginButton extends Component {
             .catch(error => {
               console.log("firebase cred err:", error);
               DeviceEventEmitter.emit('showToast', error.message);
+
+              this.onSetLoggingIn(false);
             })  // Sign in with Facebook credential
           // Do something with Facebook profile data
           // OR you have subscribed to auth state change, authStateChange handler will process the profile data
@@ -62,10 +64,11 @@ class FBLoginButton extends Component {
           .catch(error => {
             console.log(error);
             DeviceEventEmitter.emit('showToast', error.message);
+
+            this.onSetLoggingIn(false);
           })
       }
       case 'cancel': {
-
         this.onSetLoggingIn(false);
       }
     }

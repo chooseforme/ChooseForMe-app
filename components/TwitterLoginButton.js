@@ -64,7 +64,7 @@ class TwitterLoginButton extends React.Component {
   }
 
   onClose = (e) => {
-    DeviceEventEmitter.emit('showToast', "Login Cancelled");
+    //DeviceEventEmitter.emit('showToast', "Login Cancelled");
     console.log('press close button');
   }
 
