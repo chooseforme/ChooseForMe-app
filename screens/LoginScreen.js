@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => {
     return {
-        loggingin: state.loggingin,
+        loggingIn: state.loggingIn,
     };
 }
 
@@ -25,7 +25,7 @@ class LoginScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loggingIn: this.props.loggingin,
+            loggingIn: this.props.loggingIn,
         };
     }
 
@@ -52,7 +52,7 @@ class LoginScreen extends React.Component {
     }
 
     _renderbutton() {
-        if (!this.props.loggingin) {
+        if (!this.props.loggingIn) {
             return <View
                 style={{
                     flex: 1,

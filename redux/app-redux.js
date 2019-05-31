@@ -4,7 +4,7 @@ import thunkMiddleware from 'redux-thunk';
 //Initial State
 
 const InitialState = {
-    loggingin: false,
+    loggingIn: false,
 };
 
 //Reducer
@@ -12,7 +12,7 @@ const InitialState = {
 const reducer = (state = InitialState, action) => {
     switch(action.type){
         case "setLoggingIn":
-            return { ...state, loggingin: action.value}
+            return { ...state, loggingIn: action.value}
         default: return state;
     }
 

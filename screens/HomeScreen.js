@@ -8,7 +8,7 @@ import HomeHeader from '../components/common/HomeHeader';
 
 const mapStateToProps = state => {
   return {
-    loggingin: state.loggingin
+    loggingIn: state.loggingIn
   };
 };
 
@@ -21,10 +21,10 @@ const mapDispatchToProps = dispatch => {
 };
 
 class HomeScreen extends React.Component {
-  static navigationOptions = {
-    header: null,
-    loggingin: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {loggingIn : false};
+  }
 
   componentDidMount() {
     this.props.setLoggingIn(false);

@@ -18,7 +18,6 @@ export default class NormalHeader extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      keyword : "",
     };
   }
 
