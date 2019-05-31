@@ -10,7 +10,7 @@ import {
 import * as firebase from 'firebase';
 import { Button, Text } from 'native-base';
 import { connect } from 'react-redux';
-import { setLoggingIn } from '../redux/app-redux';
+import { setLoggingIn } from '../../redux/app-redux';
 
 
 

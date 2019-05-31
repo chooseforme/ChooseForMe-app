@@ -1,9 +1,9 @@
 import React from 'react';
 import { Image, Platform, ScrollView, StyleSheet, TouchableOpacity, View, StatusBar, Alert, ActivityIndicator, } from 'react-native';
 import { Container, Header, Content, Text, Button } from 'native-base';
-import FBLoginButton from '../components/FBLoginButton';
-import TwitterButton from '../components/TwitterLoginButton';
-import GoogleButton from '../components/GoogleLoginButtons';
+import FBLoginButton from '../components/loginbutton/FBLoginButton';
+import TwitterButton from '../components/loginbutton/TwitterLoginButton';
+import GoogleButton from '../components/loginbutton/GoogleLoginButtons';
 import * as firebase from 'firebase';
 import { DeviceEventEmitter } from 'react-native';
 import { connect } from 'react-redux';

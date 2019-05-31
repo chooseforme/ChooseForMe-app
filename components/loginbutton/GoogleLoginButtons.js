@@ -3,7 +3,7 @@ import { View, TouchableOpacity,DeviceEventEmitter, Alert  } from 'react-native'
 import { Text } from 'native-base';
 import * as firebase from 'firebase';
 import { connect } from 'react-redux';
-import { setLoggingIn } from '../redux/app-redux';
+import { setLoggingIn } from '../../redux/app-redux';
 
 
 const mapStateToProps = (state) => {
