@@ -23,6 +23,7 @@ export default class pollCard extends Component {
     const data = this.props.options.map(item => {
       item.isSelect = false;
       item.selectedClass = styles.list;
+      item.selectedButton = styles.button;
       return item;
     });
     this.state = {
@@ -61,9 +62,11 @@ export default class pollCard extends Component {
       if (itemIndex == index) {
         item.isSelect = !item.isSelect;
         item.selectedClass = item.isSelect ? styles.selected : styles.list;
+        item.selectedButton = item.isSelect ? styles.selectedButton : styles.button;
       } else {
         item.isSelect = false;
         item.selectedClass = item.isSelect ? styles.selected : styles.list;
+        item.selectedButton = item.isSelect ? styles.selectedButton : styles.button;
       }
     });
     this.setState({
@@ -91,7 +94,7 @@ export default class pollCard extends Component {
         </Left>
 
         <Right style={{ flex: 0.1 }}>
-          <Icon name="ios-thumbs-up" />
+          <Icon name="md-checkmark" style={[styles.button, option.item.selectedButton]}/>
         </Right>
       </CardItem>
     );
@@ -124,10 +127,10 @@ export default class pollCard extends Component {
           this.setState({showOptions : !this.state.showOptions})
           }}>
           <Left>
-            <Title numberOfLines={2}>{this.props.question}</Title>
+            <Text style={{ fontWeight: "bold" }} numberOfLines={2}>{this.props.question}</Text>
           </Left>
           <Right>
-            <Icon name= {this.state.showOptions ? "arrow-up": "arrow-down"}  />
+            <Icon name= {this.state.showOptions ? "ios-arrow-up": "ios-arrow-down"}  />
           </Right>
         </CardItem>
         {this._renderOptions()}
@@ -138,7 +141,15 @@ export default class pollCard extends Component {
 
 const styles = StyleSheet.create({
   list: {
-    backgroundColor: "#ffffff"
+    backgroundColor: "#e6e6e6"
   },
-  selected: { backgroundColor: "#29a1a3" }
+  selected: { 
+    backgroundColor: "#29a1a3" 
+  },
+  button:{
+    color: "#cccccc"
+  },
+  selectedButton:{
+    color: "#66ff66"
+  }
 });
