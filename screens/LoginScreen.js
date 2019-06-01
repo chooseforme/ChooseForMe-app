@@ -8,7 +8,6 @@ import * as firebase from 'firebase';
 import { DeviceEventEmitter } from 'react-native';
 import { connect } from 'react-redux';
 
-
 const mapStateToProps = (state) => {
     return {
         loggingIn: state.loggingIn,

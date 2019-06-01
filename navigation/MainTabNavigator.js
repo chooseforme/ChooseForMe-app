@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform } from "react-native";
+import { Platform, StyleSheet,  } from "react-native";
 import {
   createStackNavigator,
   createBottomTabNavigator
@@ -9,7 +9,11 @@ import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/HomeScreen";
 import LinksScreen from "../screens/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 import TabBar from "../components/TabBar";
+
+const activeTintColor = "#29a1a3";
+const inactiveTintColor =  "#1c253c";
 
 const HomeStack = createStackNavigator(
   {
@@ -23,53 +27,68 @@ const HomeStack = createStackNavigator(
 
 HomeStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
-    <Icon style={{ color: focused ? "blue" : "black" }} name="home" />
+    <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-contacts" />
   )
 };
 
 const PollStack = createStackNavigator({
   Poll: LinksScreen
+},
+{
+  headerMode: "none"
 });
 
 PollStack.navigationOptions = {
-  tabBarIcon: ({ focused }) => <Icon style={{ color: "black" }} name="stats" />
+  tabBarIcon: ({ focused }) => <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-stats" />
 };
 
 const SettingsStack = createStackNavigator({
   Settings: SettingsScreen
+},
+{
+  headerMode: "none"
 });
 
 SettingsStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
-    <Icon style={{ color: "black" }} name="options" />
+    <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-options" />
   )
 };
 
 const PublicStack = createStackNavigator({
   Friends: SettingsScreen
+},
+{
+  headerMode: "none"
 });
 
 PublicStack.navigationOptions = {
-  tabBarIcon: ({ focused }) => <Icon style={{ color: "black" }} name="radio" />
+  tabBarIcon: ({ focused }) => <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-radio" />
 };
 
 const ProfileStack = createStackNavigator({
-  Profile: SettingsScreen
+  Profile: ProfileScreen
+},
+{
+  headerMode: "none"
 });
 
 ProfileStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
-    <Icon style={{ color: "black" }} name="notifications" />
+    <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-notifications" />
   )
 };
 
 const ChatStack = createStackNavigator({
   Chat: SettingsScreen
+},
+{
+  headerMode: "none"
 });
 
 ChatStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
-    <Icon style={{ color: "black" }} name="chatbubbles" />
+    <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-chatbubbles" />
   )
 };
 
@@ -84,8 +103,6 @@ export default createBottomTabNavigator(
   {
     //tabBarComponent: TabBar,
     tabBarOptions: {
-      activeTintColor: "#4F4F4F",
-      inactiveTintColor: "#ddd",
       showLabel: false
     }
   }
