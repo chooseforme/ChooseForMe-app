@@ -271,9 +271,12 @@ export default class pollCard extends Component {
           }}
         >
           <Left style={{ flex: 0.9 }}>
+            <Icon name={ this.props.multipleChoice ? "more" : "radio-button-on"}/>
+            <Body>
             <Text style={{ fontWeight: "bold" }} numberOfLines={2}>
               {this.props.question}
             </Text>
+            </Body>
           </Left>
           <Right style={{ flex: 0.1 }}>
             <Icon
