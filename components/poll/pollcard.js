@@ -78,21 +78,34 @@ export default class pollCard extends Component {
     const index = this.state.dataSource.findIndex(
       item => data.item.key === item.key
     );
-    this.state.dataSource.forEach(function(item, itemIndex) {
-      if (itemIndex == index) {
-        item.isSelect = !item.isSelect;
-        item.selectedClass = item.isSelect ? styles.selected : styles.list;
-        item.selectedButton = item.isSelect
-          ? styles.selectedButton
-          : styles.button;
-      } else {
-        item.isSelect = false;
-        item.selectedClass = item.isSelect ? styles.selected : styles.list;
-        item.selectedButton = item.isSelect
-          ? styles.selectedButton
-          : styles.button;
-      }
-    });
+    if (!this.props.multipleChoice) {
+      //singleChoice
+      this.state.dataSource.forEach(function(item, itemIndex) {
+        if (itemIndex == index) {
+          item.isSelect = !item.isSelect;
+          item.selectedClass = item.isSelect ? styles.selected : styles.list;
+          item.selectedButton = item.isSelect
+            ? styles.selectedButton
+            : styles.button;
+        } else {
+          item.isSelect = false;
+          item.selectedClass = item.isSelect ? styles.selected : styles.list;
+          item.selectedButton = item.isSelect
+            ? styles.selectedButton
+            : styles.button;
+        }
+      });
+    } else {
+      //MultipleChoice
+      data.item.isSelect = !data.item.isSelect;
+      data.item.selectedClass = data.item.isSelect
+        ? styles.selected
+        : styles.list;
+      data.item.selectedButton = data.item.isSelect
+        ? styles.selectedButton
+        : styles.button;
+      this.state.dataSource[index] = data.item;
+    }
     this.setState({
       dataSource: this.state.dataSource
     });
@@ -239,6 +252,14 @@ export default class pollCard extends Component {
               <Text note>{this.props.createdAt}</Text>
             </Body>
           </Left>
+          <Right>
+            <Image
+              source={require("../../assets/images/logo-2.png")}
+              resizeMode="contain"
+              style={{ width: 30, height: 20 }}
+            />
+            <Text>{this.props.reward.toFixed(2)}</Text>
+          </Right>
         </CardItem>
         <CardItem
           bordered
@@ -249,7 +270,7 @@ export default class pollCard extends Component {
           }}
         >
           <Left style={{ flex: 0.9 }}>
-            <Text style={{ fontWeight: "bold" }} numberOfLines={3}>
+            <Text style={{ fontWeight: "bold" }} numberOfLines={2}>
               {this.props.question}
             </Text>
           </Left>
