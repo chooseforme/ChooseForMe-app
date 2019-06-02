@@ -116,14 +116,12 @@ class HomeScreen extends React.Component {
       <Container>
         <HomeHeader navigation={this.props.navigation} />
         <Content>
-          <List style={{ flex: 0 }}>
             <FlatList
               data={this.state.pollsdata}
               renderItem={this._renderRow}
               keyExtractor={item => item.id.toString()}
               extraData={this.state}
             />
-          </List>
         </Content>
       </Container>
     );

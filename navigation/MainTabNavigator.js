@@ -7,7 +7,8 @@ import {
 import { Icon } from "native-base";
 import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/HomeScreen";
-import LinksScreen from "../screens/LinksScreen";
+import PublicScreen from "../screens/PublicScreen";
+import AddPollScreen from "../screens/AddPollScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import TabBar from "../components/TabBar";
@@ -32,7 +33,7 @@ HomeStack.navigationOptions = {
 };
 
 const PollStack = createStackNavigator({
-  Poll: LinksScreen
+  Poll: AddPollScreen
 },
 {
   headerMode: "none"
@@ -56,7 +57,7 @@ SettingsStack.navigationOptions = {
 };
 
 const PublicStack = createStackNavigator({
-  Friends: SettingsScreen
+  Public: PublicScreen
 },
 {
   headerMode: "none"
@@ -75,7 +76,7 @@ const ProfileStack = createStackNavigator({
 
 ProfileStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
-    <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-notifications" />
+    <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-contact" />
   )
 };
 

@@ -36,7 +36,7 @@ export default class pollCard extends Component {
     };
   }
 
-  //render theron options
+  //render the options
   _renderOptions = () => {
     if (this.state.showOptions) {
       return (
@@ -56,6 +56,7 @@ export default class pollCard extends Component {
   };
 
   _renderBottomFunctionButton = () => {
+    //render bottom function button if not voted
     if (!this.props.voted) {
       return (
         <CardItem>
@@ -154,7 +155,7 @@ export default class pollCard extends Component {
                       color: "#666666"
                     }}
                   >
-                    {option.item.votes} support
+                    {option.item.votes} pushes
                   </Text>
                 </Row>
                 <Row>
@@ -199,7 +200,7 @@ export default class pollCard extends Component {
                     color: "#666666"
                   }}
                 >
-                  {option.item.votes} support
+                  {option.item.votes} pushes
                 </Text>
               </Row>
               <Row>
