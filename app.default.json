@@ -1,43 +1,50 @@
 {
-    "expo": {
-      "name": "chooseforme",
-      "slug": "chooseforme",
-      "privacy": "public",
-      "sdkVersion": "32.0.0",
-      "platforms": [
-        "ios",
-        "android"
-      ],
-      "version": "1.0.0",
-      "orientation": "portrait",
-      "icon": "./assets/images/icon.png",
-      "splash": {
-        "image": "./assets/images/splash.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#ffffff"
+  "expo": {
+    "name": "chooseforme",
+    "slug": "chooseforme",
+    "privacy": "public",
+    "sdkVersion": "32.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "extra": {
+      "firebase": {
+          "apiKey": "",
+          "authDomain": "",
+          "databaseURL": "",
+          "projectId": "",
+          "storageBucket": "",
+          "messagingSenderId": "",
+          "appId": ""
       },
-      "updates": {
-        "fallbackToCacheTimeout": 0
+      "facebook": {
+        "appId": ""
       },
-      "assetBundlePatterns": [
-        "**/*"
-      ],
-      "ios": {
-        "supportsTablet": true
+      "twitter":{
+        "consumerKey": "",
+        "consumerKeySecret": ""
       },
-      "extra": {
-        "firebase": {
-          "apiKey": "xxxxxx",
-          "authDomain": "xxxx",
-          "databaseURL": "xxxxx",
-          "projectId": "xxxxxx",
-          "storageBucket": "xxxxxx",
-          "messagingSenderId": "xxxxxx",
-          "appId": "xxxxxxx"
-        },
-        "facebook": {
-          "appId": "xxxx"
-        }
+      "ios":{
+        "clientId": ""
+      },
+      "android" :{
+        "clientId": "å"
       }
     }
   }
+}
