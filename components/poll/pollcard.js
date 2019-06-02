@@ -138,13 +138,13 @@ export default class pollCard extends Component {
                   <ProgressBarAnimated
                     width={Dimensions.get("screen").width - 30}
                     height={20}
-                    borderRadius={8}
+                    borderRadius={10}
                     value={(option.item.votes / this.props.totalVotes) * 100}
                     backgroundColor={barColor}
                   />
                   <Text
                     style={{
-                      fontSize: 13,
+                      fontSize: 12,
                       position: "absolute",
                       top: 2,
                       left: 10,
@@ -183,13 +183,13 @@ export default class pollCard extends Component {
                 <ProgressBarAnimated
                   width={Dimensions.get("screen").width - 30}
                   height={20}
-                  borderRadius={8}
+                  borderRadius={10}
                   value={(option.item.votes / this.props.totalVotes) * 100}
                   backgroundColor={barColor}
                 />
                 <Text
                   style={{
-                    fontSize: 13,
+                    fontSize: 12,
                     position: "absolute",
                     top: 2,
                     left: 10,
