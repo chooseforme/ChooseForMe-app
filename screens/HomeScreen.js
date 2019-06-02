@@ -6,6 +6,7 @@ import { setLoggingIn } from "../redux/app-redux";
 import { Header, Container, Content, Text, Button, List } from "native-base";
 import HomeHeader from "../components/common/HomeHeader";
 import PollCard from "../components/poll/pollcard";
+
 const mapStateToProps = state => {
   return {
     loggingIn: state.loggingIn
@@ -28,24 +29,26 @@ class HomeScreen extends React.Component {
       pollsdata: [
         {
           id: 1,
-          read: true,
+          voted: true,
           author: "IO",
           createdAt: "today",
-          question: "Help!!!",
+          question: "Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!",
+          totalVotes: 90,
           options: [
-            { key: 1, word: "home" },
-            { key: 2, word: "school31231" },
+            { key: 1, word: "home" ,votes: 80 , UserVoted: true},
+            { key: 2, word: "school31231", votes: 10 , UserVoted: false},
           ]
         },
         { id: 2,
-          read: false,
+          voted: false,
           author: "IO2",
           createdAt: "yesterday",
           question: "Help!!!Me!!!!!!!",
+          totalVotes: 2000,
           options: [
-            { key: 1, word: "home" },
-            { key: 2, word: "school" },
-            { key: 3, word: "idk go find it yourself ssssssssssssss" }
+            { key: 1, word: "home" , votes: 400, UserVoted: true},
+            { key: 2, word: "school" , votes: 1000, UserVoted: false},
+            { key: 3, word: "idk go find it yourself ssssssssssssss" ,votes: 600 , UserVoted: true}
           ]
         }
       ]
@@ -63,6 +66,8 @@ class HomeScreen extends React.Component {
         createdAt={poll.item.createdAt}
         question={poll.item.question}
         options={poll.item.options}
+        totalVotes={poll.item.totalVotes}
+        voted={poll.item.voted}
       />
     );
   };
