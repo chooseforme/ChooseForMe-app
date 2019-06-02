@@ -51,14 +51,14 @@ export default class HomeHeader extends Component {
     if (this.props.navigation.state.routeName == "Profile") {
       return (
         <Button transparent onPress={this.showActionSheet}>
-          <Icon name="more" style={{ color: "black" }} />
+          <Icon name="more" style={{ color: "#1c253c" }} />
         </Button>
       );
     }
     if(this.props.navigation.state.routeName == "Home" || this.props.navigation.state.routeName == "Public"){
       return (
         <Button transparent>
-          <Icon name="ios-notifications" style={{ color: "black" }} />
+          <Icon name="ios-notifications" style={{ color: "#1c253c" }} />
         </Button>
       );
     }

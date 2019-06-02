@@ -40,7 +40,7 @@ const PollStack = createStackNavigator({
 });
 
 PollStack.navigationOptions = {
-  tabBarIcon: ({ focused }) => <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-stats" />
+  tabBarIcon: ({ focused }) => <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-open" />
 };
 
 const SettingsStack = createStackNavigator({
