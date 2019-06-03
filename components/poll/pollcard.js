@@ -132,54 +132,41 @@ export default class pollCard extends Component {
         return (
           <View>
             <CardItem bordered style={styles.selected}>
-            <Left style={{ flex: 0.9 }}>
-              <ProgressBarAnimated
-                width={Dimensions.get("screen").width - 25}
-                height={30}
-                borderRadius={15}
-                value={option.item.votes}
-                backgroundColor={barColor}
-              />
-              <Text
-                numberOfLines={1}
-                style={{
-                  fontSize: 16,
-                  position: "absolute",
-                  top: 5,
-                  left: 10,
-                  right: 0,
-                  bottom: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  color: "#666666"
-                }}
-              >
-                {option.item.word}
-              </Text>
-            </Left>
+              <Left style={{ flex: 0.9 }}>
+                <ProgressBarAnimated
+                  width={Dimensions.get("screen").width - 25}
+                  height={30}
+                  borderRadius={15}
+                  value={(option.item.votes / this.props.totalVotes) * 100}
+                  backgroundColor={barColor}
+                />
+                <Text
+                  numberOfLines={1}
+                  style={styles.OptionText}
+                >
+                  {option.item.word}
+                </Text>
+              </Left>
 
-            <Right
-              style={{
-                flex: 0.3,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-end"
-              }}
-            >
-              <Text
+              <Right
                 style={{
-                  fontSize: 12,
-                  color: "#666666",
-                  paddingRight: 5
+                  flex: 0.2,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "flex-end"
                 }}
               >
-                {option.item.votes}
-              </Text>
-              <Icon
-                name="md-checkmark"
-                style={styles.selectedButton}
-              />
-            </Right>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: "#666666",
+                    paddingRight: 5
+                  }}
+                >
+                  {option.item.votes}
+                </Text>
+                <Icon name="md-checkmark" style={styles.selectedButton} />
+              </Right>
             </CardItem>
           </View>
         );
@@ -193,22 +180,12 @@ export default class pollCard extends Component {
                 width={Dimensions.get("screen").width - 25}
                 height={30}
                 borderRadius={15}
-                value={option.item.votes}
+                value={(option.item.votes / this.props.totalVotes) * 100}
                 backgroundColor={barColor}
               />
               <Text
                 numberOfLines={1}
-                style={{
-                  fontSize: 16,
-                  position: "absolute",
-                  top: 5,
-                  left: 10,
-                  right: 0,
-                  bottom: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  color: "#666666"
-                }}
+                style={styles.OptionText}
               >
                 {option.item.word}
               </Text>
@@ -216,7 +193,7 @@ export default class pollCard extends Component {
 
             <Right
               style={{
-                flex: 0.3,
+                flex: 0.2,
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "flex-end"
@@ -231,10 +208,7 @@ export default class pollCard extends Component {
               >
                 {option.item.votes}
               </Text>
-              <Icon
-                name="md-checkmark"
-                style={styles.button}
-              />
+              <Icon name="md-checkmark" style={styles.button} />
             </Right>
           </CardItem>
         </View>
@@ -261,23 +235,13 @@ export default class pollCard extends Component {
           />
           <Text
             numberOfLines={1}
-            style={{
-              fontSize: 16,
-              position: "absolute",
-              top: 5,
-              left: 10,
-              right: 0,
-              bottom: 0,
-              justifyContent: "center",
-              alignItems: "center",
-              color: "#666666"
-            }}
+            style={styles.OptionText}
           >
             {option.item.word}
           </Text>
         </Left>
 
-        <Right style={{ flex: 0.1 }}>
+        <Right style={{ flex: 0.2 }}>
           <Icon
             name="md-checkmark"
             style={[styles.button, option.item.selectedButton]}
@@ -355,5 +319,16 @@ const styles = StyleSheet.create({
   },
   selectedButton: {
     color: "#00b300"
+  },
+  OptionText: {
+    fontSize: 18,
+    position: "absolute",
+    top: 5,
+    left: 7,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    color: "#000000"
   }
 });

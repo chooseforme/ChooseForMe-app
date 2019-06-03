@@ -65,7 +65,7 @@ class HomeScreen extends React.Component {
           id: 3,
           multipleChoice: false,
           reward: 0.26,
-          voted: false,
+          voted: true,
           author: "IO2",
           createdAt: "yesterday",
           question: "食屎定係飲尿好",
