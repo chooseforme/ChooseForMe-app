@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Image, View, FlatList, StyleSheet, Dimensions } from "react-native";
+import {
+  Image,
+  View,
+  FlatList,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity
+} from "react-native";
 import {
   Container,
   Header,
@@ -125,43 +132,54 @@ export default class pollCard extends Component {
         return (
           <View>
             <CardItem bordered style={styles.selected}>
-              <Grid>
-                <Row style={{ paddingBottom: 5 }}>
-                  <Left>
-                    <Text numberOfLines={1}>{option.item.word}</Text>
-                  </Left>
-                  <Right style={{ flex: 0.1 }}>
-                    <Icon name="md-checkmark" style={[styles.selectedButton]} />
-                  </Right>
-                </Row>
-                <Row>
-                  <ProgressBarAnimated
-                    width={Dimensions.get("screen").width - 30}
-                    height={20}
-                    borderRadius={10}
-                    value={(option.item.votes / this.props.totalVotes) * 100}
-                    backgroundColor={barColor}
-                  />
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      position: "absolute",
-                      top: 2,
-                      left: 10,
-                      right: 0,
-                      bottom: 0,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      color: "#666666"
-                    }}
-                  >
-                    {option.item.votes} pushes
-                  </Text>
-                </Row>
-                <Row>
-                  <Left />
-                </Row>
-              </Grid>
+            <Left style={{ flex: 0.9 }}>
+              <ProgressBarAnimated
+                width={Dimensions.get("screen").width - 25}
+                height={30}
+                borderRadius={15}
+                value={option.item.votes}
+                backgroundColor={barColor}
+              />
+              <Text
+                numberOfLines={1}
+                style={{
+                  fontSize: 16,
+                  position: "absolute",
+                  top: 5,
+                  left: 10,
+                  right: 0,
+                  bottom: 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  color: "#666666"
+                }}
+              >
+                {option.item.word}
+              </Text>
+            </Left>
+
+            <Right
+              style={{
+                flex: 0.3,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-end"
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: "#666666",
+                  paddingRight: 5
+                }}
+              >
+                {option.item.votes}
+              </Text>
+              <Icon
+                name="md-checkmark"
+                style={styles.selectedButton}
+              />
+            </Right>
             </CardItem>
           </View>
         );
@@ -170,43 +188,54 @@ export default class pollCard extends Component {
       return (
         <View>
           <CardItem bordered style={styles.list}>
-            <Grid>
-              <Row style={{ paddingBottom: 5 }}>
-                <Left>
-                  <Text numberOfLines={1}>{option.item.word}</Text>
-                </Left>
-                <Right style={{ flex: 0.1 }}>
-                  <Icon name="md-checkmark" style={[styles.Button]} />
-                </Right>
-              </Row>
-              <Row>
-                <ProgressBarAnimated
-                  width={Dimensions.get("screen").width - 30}
-                  height={20}
-                  borderRadius={10}
-                  value={(option.item.votes / this.props.totalVotes) * 100}
-                  backgroundColor={barColor}
-                />
-                <Text
-                  style={{
-                    fontSize: 12,
-                    position: "absolute",
-                    top: 2,
-                    left: 10,
-                    right: 0,
-                    bottom: 0,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "#666666"
-                  }}
-                >
-                  {option.item.votes} pushes
-                </Text>
-              </Row>
-              <Row>
-                <Left />
-              </Row>
-            </Grid>
+            <Left style={{ flex: 0.9 }}>
+              <ProgressBarAnimated
+                width={Dimensions.get("screen").width - 25}
+                height={30}
+                borderRadius={15}
+                value={option.item.votes}
+                backgroundColor={barColor}
+              />
+              <Text
+                numberOfLines={1}
+                style={{
+                  fontSize: 16,
+                  position: "absolute",
+                  top: 5,
+                  left: 10,
+                  right: 0,
+                  bottom: 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  color: "#666666"
+                }}
+              >
+                {option.item.word}
+              </Text>
+            </Left>
+
+            <Right
+              style={{
+                flex: 0.3,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-end"
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: "#666666",
+                  paddingRight: 5
+                }}
+              >
+                {option.item.votes}
+              </Text>
+              <Icon
+                name="md-checkmark"
+                style={styles.button}
+              />
+            </Right>
           </CardItem>
         </View>
       );
@@ -223,7 +252,29 @@ export default class pollCard extends Component {
         }}
       >
         <Left style={{ flex: 0.9 }}>
-          <Text numberOfLines={1}>{option.item.word}</Text>
+          <ProgressBarAnimated
+            width={Dimensions.get("screen").width - 25}
+            height={30}
+            borderRadius={15}
+            value={0}
+            backgroundColor={barColor}
+          />
+          <Text
+            numberOfLines={1}
+            style={{
+              fontSize: 16,
+              position: "absolute",
+              top: 5,
+              left: 10,
+              right: 0,
+              bottom: 0,
+              justifyContent: "center",
+              alignItems: "center",
+              color: "#666666"
+            }}
+          >
+            {option.item.word}
+          </Text>
         </Left>
 
         <Right style={{ flex: 0.1 }}>
@@ -271,11 +322,13 @@ export default class pollCard extends Component {
           }}
         >
           <Left style={{ flex: 0.9 }}>
-            <Icon name={ this.props.multipleChoice ? "more" : "radio-button-on"}/>
+            <Icon
+              name={this.props.multipleChoice ? "more" : "radio-button-on"}
+            />
             <Body>
-            <Text style={{ fontWeight: "bold" }} numberOfLines={2}>
-              {this.props.question}
-            </Text>
+              <Text style={{ fontWeight: "bold" }} numberOfLines={2}>
+                {this.props.question}
+              </Text>
             </Body>
           </Left>
           <Right style={{ flex: 0.1 }}>
