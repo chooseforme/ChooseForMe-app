@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2"
   },
   selected: {
-    backgroundColor: "#e6e6e6"
+    backgroundColor: "#d6f5d6"
   },
   button: {
     color: "#cccccc"
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     color: "#00b300"
   },
   OptionText: {
-    fontSize: 18,
+    fontSize: 16,
     position: "absolute",
     top: 5,
     left: 7,
@@ -329,6 +329,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center",
-    color: "#000000"
+    color: "#666666"
   }
 });
