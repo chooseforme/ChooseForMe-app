@@ -29,6 +29,12 @@ class AddPollScreen extends Component {
     };
   }
 
+  componentDidMount(){
+    for (var i = 0; i<3; i++){
+      this._addOption();
+  }
+  }
+
   _addOption = () => {
     const newData = this.state.data;
     newData.options.push({ id: Math.random() });
