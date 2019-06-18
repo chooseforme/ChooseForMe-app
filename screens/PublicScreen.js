@@ -27,67 +27,6 @@ class PublicScreen extends React.Component {
     this.state = {
       loggingIn: false,
       pollsdata: [
-        {
-          id: 1,
-          multipleChoice: false,
-          reward: 10,
-          voted: true,
-          author: "test1",
-          createdAt: "today",
-          question: "Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!",
-          totalVotes: 90,
-          options: [
-            { key: 1, word: "home", votes: 80, UserVoted: true },
-            { key: 2, word: "school31231", votes: 10, UserVoted: false }
-          ]
-        },
-        {
-          id: 2,
-          multipleChoice: true,
-          reward: 0.26,
-          voted: false,
-          author: "test2",
-          createdAt: "yesterday",
-          question: "Help!!!Me!!!!!!!",
-          totalVotes: 2000,
-          options: [
-            { key: 1, word: "home", votes: 400, UserVoted: true },
-            { key: 2, word: "school", votes: 1000, UserVoted: false },
-            {
-              key: 3,
-              word: "idk go find it yourself ssssssssssssss",
-              votes: 600,
-              UserVoted: true
-            }
-          ]
-        },        
-        {
-          id: 3,
-          multipleChoice: false,
-          reward: 0.26,
-          voted: false,
-          author: "tes3",
-          createdAt: "yesterday",
-          question: "食屎定係飲尿好",
-          totalVotes: 2000,
-          options: [
-            { key: 1, word: "屎", votes: 400, UserVoted: true },
-            { key: 2, word: "尿", votes: 1000, UserVoted: false },
-            {
-              key: 3,
-              word: "why not both？",
-              votes: 600,
-              UserVoted: true
-            },        
-            {
-              key: 4,
-              word: "我全都要！！！！！！！！！！！！！！！！！！！！！！！！！！！！",
-              votes: 600,
-              UserVoted: true
-            }
-          ]
-        },
-        
       ]
     };
   }

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, FlatList, Image } from "react-native";
+import { View, FlatList, Image, Platform } from "react-native";
 import {
   Header,
   Container,
@@ -14,30 +14,70 @@ import {
   Icon,
   Left,
   Body,
-  Right
+  Right,
+  Tab,
+  Tabs,
+  FooterTab,
+  Footer,
+  CheckBox,
+  ListItem
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 import AppStyle from "../components/common/AppStyle";
+import * as firebase from "firebase";
+import '@firebase/firestore';
+
+
 class AddPollScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      question: "",
       data: {
-        question: "",
         options: []
-      }
+      },
+      openEnded: false,
+      private: false,
     };
   }
 
-  componentDidMount(){
-    for (var i = 0; i<3; i++){
+  componentDidMount() {
+    for (var i = 0; i < 3; i++) {
       this._addOption();
+    }
   }
+
+  // _getOptions = ()=> {
+  //   var newOptions = [];
+  //   this.state.data.options.forEach((option)=>{
+  //     console.log(option.option);
+  //     newOptions.push(option.option);
+  //   })
+  //   return newOptions;
+  // }
+
+  _addPoll = () => {
+    var db = firebase.firestore();
+    db.collection("polls").add({
+      author: firebase.auth().currentUser.uid,
+      private: this.state.private,
+      openEnded: this.state.openEnded,
+      createdAt: Date.now(),
+      question: this.state.question,
+      options: this.state.data.options
+    })
+      .then(function (docRef) {
+        console.log("Document written with ID: ", docRef.id);
+      })
+      .catch(function (error) {
+        console.error("Error adding document: ", error);
+      });
+
   }
 
   _addOption = () => {
     const newData = this.state.data;
-    newData.options.push({ id: Math.random() });
+    newData.options.push({ id: Math.random().toString(36).substr(2, 9) });
     this.setState({
       data: newData
     });
@@ -54,6 +94,18 @@ class AddPollScreen extends Component {
     });
   };
 
+  _editOption = (option, word) => {
+    const index = this.state.data.options.findIndex(
+      item => option.item.id === item.id
+    );
+    const newData = this.state.data;
+    newData.options[index].option = word;
+    this.setState({
+      data: newData
+    });
+  }
+
+  
   _renderRow = option => {
     return (
       <Item stackedLabel>
@@ -71,7 +123,10 @@ class AddPollScreen extends Component {
             <Icon name="remove" />
           </Button>
         </View>
-        <Input />
+        <Input
+          placeholder="Your option here..."
+          onChangeText={q => this._editOption(option,q)}
+          />
       </Item>
     );
   };
@@ -81,14 +136,6 @@ class AddPollScreen extends Component {
       <Container>
         <Header hasTabs style={AppStyle.headerLight}>
           <Left style={{ flex: 1 }}>
-            <Button
-              transparent
-              onPress={() => {
-                this._addOption();
-              }}
-            >
-              <Icon name="add" style={{ color: "#1c253c" }} />
-            </Button>
           </Left>
           <Body style={{ flex: 1 }}>
             <Image
@@ -101,19 +148,34 @@ class AddPollScreen extends Component {
             <Button
               transparent
               onPress={() => {
-                this._addOption();
+                this._addPoll();
               }}
             >
-              <Icon name="md-send" style={{ color: "#1c253c"}} />
+              <Icon name="md-send" style={{ color: "#1c253c" }} />
             </Button>
           </Right>
         </Header>
+
         <Content>
           <Form>
             <Item stackedLabel>
               <Label style={{ color: "black" }}>Question</Label>
-              <Input />
+              <Input placeholder="Your question here..."
+                onChangeText={q => this.setState({ question: q })}
+                value={this.state.question} />
             </Item>
+            <ListItem selected={this.state.private} onPress={() => { this.setState({ private: !this.state.private }) }}>
+              <CheckBox checked={this.state.private} />
+              <Body>
+                <Text>Private</Text>
+              </Body>
+            </ListItem>
+            <ListItem selected={this.state.openEnded} onPress={() => { this.setState({ openEnded: !this.state.openEnded }) }}>
+              <CheckBox checked={this.state.openEnded} />
+              <Body>
+                <Text>Open Ended</Text>
+              </Body>
+            </ListItem>
             <FlatList
               data={this.state.data.options}
               renderItem={this._renderRow}
@@ -122,6 +184,19 @@ class AddPollScreen extends Component {
             />
           </Form>
         </Content>
+        <Footer>
+          <FooterTab>
+            <Button
+              transparent
+              full
+              onPress={() => {
+                this._addOption();
+              }}
+            >
+              <Icon name="add" style={{ color: "#1c253c" }} />
+            </Button>
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }

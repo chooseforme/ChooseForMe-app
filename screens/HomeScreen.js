@@ -37,8 +37,8 @@ class HomeScreen extends React.Component {
           question: "Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!",
           totalVotes: 90,
           options: [
-            { key: 1, word: "home", votes: 80, UserVoted: true },
-            { key: 2, word: "school31231", votes: 10, UserVoted: false }
+            { key: 1, option: "home", votes: 80, UserVoted: true },
+            { key: 2, option: "school31231", votes: 10, UserVoted: false }
           ]
         },
         {
@@ -51,11 +51,11 @@ class HomeScreen extends React.Component {
           question: "Help!!!Me!!!!!!!",
           totalVotes: 2000,
           options: [
-            { key: 1, word: "home", votes: 400, UserVoted: true },
-            { key: 2, word: "school", votes: 1000, UserVoted: false },
+            { key: 1, option: "home", votes: 400, UserVoted: true },
+            { key: 2, option: "school", votes: 1000, UserVoted: false },
             {
               key: 3,
-              word: "idk go find it yourself ssssssssssssss",
+              option: "idk go find it yourself ssssssssssssss",
               votes: 600,
               UserVoted: true
             }
@@ -71,17 +71,17 @@ class HomeScreen extends React.Component {
           question: "食屎定係飲尿好",
           totalVotes: 2000,
           options: [
-            { key: 1, word: "屎", votes: 400, UserVoted: true },
-            { key: 2, word: "尿", votes: 1000, UserVoted: false },
+            { key: 1, option: "屎", votes: 400, UserVoted: true },
+            { key: 2, option: "尿", votes: 1000, UserVoted: false },
             {
               key: 3,
-              word: "why not both？",
+              option: "why not both？",
               votes: 600,
               UserVoted: true
             },        
             {
               key: 4,
-              word: "我全都要！！！！！！！！！！！！！！！！！！！！！！！！！！！！",
+              option: "我全都要！！！！！！！！！！！！！！！！！！！！！！！！！！！！",
               votes: 600,
               UserVoted: true
             }

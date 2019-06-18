@@ -21,7 +21,7 @@ import {
   Body,
   Right,
   Title,
-  Radio
+  Radio,
 } from "native-base";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import ProgressBarAnimated from "react-native-progress-bar-animated";
@@ -120,7 +120,7 @@ export default class pollCard extends Component {
   };
 
   _onOptionPress = option => {
-    alert(option.item.word);
+    alert(option.item.option);
   };
 
   //render each option
@@ -144,7 +144,7 @@ export default class pollCard extends Component {
                   numberOfLines={1}
                   style={styles.OptionText}
                 >
-                  {option.item.word}
+                  {option.item.option}
                 </Text>
               </Left>
 
@@ -187,7 +187,7 @@ export default class pollCard extends Component {
                 numberOfLines={1}
                 style={styles.OptionText}
               >
-                {option.item.word}
+                {option.item.option}
               </Text>
             </Left>
 
@@ -237,7 +237,7 @@ export default class pollCard extends Component {
             numberOfLines={1}
             style={styles.OptionText}
           >
-            {option.item.word}
+            {option.item.option}
           </Text>
         </Left>
 
