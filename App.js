@@ -9,6 +9,7 @@ import {
 import { AppLoading, Asset, Font, Icon } from "expo";
 import AppNavigator from "./navigation/AppNavigator";
 import * as firebase from "firebase";
+import '@firebase/firestore';
 import twitter from "react-native-simple-twitter";
 import Toast, { DURATION } from "react-native-easy-toast";
 import { Provider } from "react-redux";

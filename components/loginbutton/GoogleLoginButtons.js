@@ -47,7 +47,6 @@ class GoogleLoginButton extends Component {
           .signInWithCredential(credential)
           .then(res => {
             // user res, create your user, do whatever you want
-
           })
           .catch(error => {
             DeviceEventEmitter.emit('showToast', error.message);

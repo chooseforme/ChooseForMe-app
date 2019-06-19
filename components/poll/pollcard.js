@@ -51,7 +51,7 @@ export default class pollCard extends Component {
           <FlatList
             data={this.state.dataSource}
             renderItem={this._renderRow}
-            keyExtractor={item => item.key.toString()}
+            keyExtractor={item => item.id.toString()}
             extraData={this.state}
           />
           {this._renderBottomFunctionButton()}
@@ -84,7 +84,7 @@ export default class pollCard extends Component {
 
   _selectItem = data => {
     const index = this.state.dataSource.findIndex(
-      item => data.item.key === item.key
+      item => data.item.id === item.id
     );
     if (!this.props.multipleChoice) {
       //singleChoice

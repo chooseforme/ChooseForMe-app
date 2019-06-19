@@ -6,6 +6,8 @@ import { setLoggingIn } from "../redux/app-redux";
 import { Header, Container, Content, Text, Button, List } from "native-base";
 import HomeHeader from "../components/common/HomeHeader";
 import PollCard from "../components/poll/pollcard";
+import pollCard from "../components/poll/pollcard";
+
 
 const mapStateToProps = state => {
   return {
@@ -26,83 +28,39 @@ class HomeScreen extends React.Component {
     super(props);
     this.state = {
       loggingIn: false,
-      pollsdata: [
-        {
-          id: 1,
-          multipleChoice: false,
-          reward: 10,
-          voted: true,
-          author: "IO",
-          createdAt: "today",
-          question: "Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!",
-          totalVotes: 90,
-          options: [
-            { key: 1, option: "home", votes: 80, UserVoted: true },
-            { key: 2, option: "school31231", votes: 10, UserVoted: false }
-          ]
-        },
-        {
-          id: 2,
-          multipleChoice: true,
-          reward: 0.26,
-          voted: false,
-          author: "IO2",
-          createdAt: "yesterday",
-          question: "Help!!!Me!!!!!!!",
-          totalVotes: 2000,
-          options: [
-            { key: 1, option: "home", votes: 400, UserVoted: true },
-            { key: 2, option: "school", votes: 1000, UserVoted: false },
-            {
-              key: 3,
-              option: "idk go find it yourself ssssssssssssss",
-              votes: 600,
-              UserVoted: true
-            }
-          ]
-        },        
-        {
-          id: 3,
-          multipleChoice: false,
-          reward: 0.26,
-          voted: true,
-          author: "IO2",
-          createdAt: "yesterday",
-          question: "食屎定係飲尿好",
-          totalVotes: 2000,
-          options: [
-            { key: 1, option: "屎", votes: 400, UserVoted: true },
-            { key: 2, option: "尿", votes: 1000, UserVoted: false },
-            {
-              key: 3,
-              option: "why not both？",
-              votes: 600,
-              UserVoted: true
-            },        
-            {
-              key: 4,
-              option: "我全都要！！！！！！！！！！！！！！！！！！！！！！！！！！！！",
-              votes: 600,
-              UserVoted: true
-            }
-          ]
-        },
-        
-      ]
+      pollsdata: [],
     };
   }
 
   componentDidMount() {
     this.props.setLoggingIn(false);
+    this._getDocument();
+  }
+
+  _getDocument(){
+    var db = firebase.firestore();
+    db.collection("polls").get().then((querySnapshot) => {
+      var pollsdata =[];
+      querySnapshot.forEach((doc) => {
+          //console.log(`${doc.id} => ${doc.data()}`);
+          var data = doc.data();
+          data.id = doc.id;
+          pollsdata.push(data);
+      });
+      //console.log(pollsdata);
+      this.setState({pollsdata: pollsdata});
+    });
+
   }
 
   _renderRow = poll => {
+   // console.log(poll)
     return (
       <PollCard
         multipleChoice={poll.item.multipleChoice}
         reward={poll.item.reward}
         author={poll.item.author}
-        createdAt={poll.item.createdAt}
+        createdAt={new Date(poll.item.createdAt).toLocaleDateString()}
         question={poll.item.question}
         options={poll.item.options}
         totalVotes={poll.item.totalVotes}
