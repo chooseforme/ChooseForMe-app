@@ -2,16 +2,16 @@ import React from "react";
 import { Image, View, ActivityIndicator, FlatList } from "react-native";
 import * as firebase from "firebase";
 import { connect } from "react-redux";
-import { setLoggingIn } from "../redux/app-redux";
+import { setLoggingIn, watchPublicPolls } from "../redux/app-redux";
 import { Header, Container, Content, Text, Button, List } from "native-base";
 import HomeHeader from "../components/common/HomeHeader";
 import PollCard from "../components/poll/pollcard";
-import pollCard from "../components/poll/pollcard";
 
 
 const mapStateToProps = state => {
   return {
-    loggingIn: state.loggingIn
+    loggingIn: state.loggingIn,
+    publicPolls: state.publicPolls
   };
 };
 
@@ -19,6 +19,9 @@ const mapDispatchToProps = dispatch => {
   return {
     setLoggingIn: logging => {
       dispatch(setLoggingIn(logging));
+    },
+    watchPublicPolls : () => {
+      dispatch(watchPublicPolls());
     }
   };
 };
@@ -30,36 +33,40 @@ class HomeScreen extends React.Component {
       loggingIn: false,
       pollsdata: [],
     };
+    this.props.watchPublicPolls();
   }
 
   componentDidMount() {
     this.props.setLoggingIn(false);
-    this._getDocument();
   }
 
-  _getDocument(){
+  _getAuthorName(uid) {
     var db = firebase.firestore();
-    db.collection("polls").get().then((querySnapshot) => {
-      var pollsdata =[];
-      querySnapshot.forEach((doc) => {
-          //console.log(`${doc.id} => ${doc.data()}`);
-          var data = doc.data();
-          data.id = doc.id;
-          pollsdata.push(data);
-      });
-      //console.log(pollsdata);
-      this.setState({pollsdata: pollsdata});
+    var docRef = db.collection("users").doc(uid);
+
+    docRef.get().then(function (doc) {
+      if (doc.exists) {
+        console.log("Document data:", doc.data().displayName);
+        return doc.data().displayName;
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+        return "unknown";
+      }
+    }).catch(function (error) {
+      console.log("Error getting document:", error);
+      return "unknown";
     });
 
   }
 
   _renderRow = poll => {
-   // console.log(poll)
+    // console.log(poll)
     return (
       <PollCard
         multipleChoice={poll.item.multipleChoice}
         reward={poll.item.reward}
-        author={poll.item.author}
+        author={poll.item.authorName}
         createdAt={new Date(poll.item.createdAt).toLocaleDateString()}
         question={poll.item.question}
         options={poll.item.options}
@@ -74,12 +81,12 @@ class HomeScreen extends React.Component {
       <Container>
         <HomeHeader navigation={this.props.navigation} />
         <Content>
-            <FlatList
-              data={this.state.pollsdata}
-              renderItem={this._renderRow}
-              keyExtractor={item => item.id.toString()}
-              extraData={this.state}
-            />
+          <FlatList
+            data={this.props.publicPolls}
+            renderItem={this._renderRow}
+            keyExtractor={item => item.id.toString()}
+            extraData={this.state}
+          />
         </Content>
       </Container>
     );
