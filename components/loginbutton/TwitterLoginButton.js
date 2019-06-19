@@ -41,9 +41,24 @@ class TwitterLoginButton extends React.Component {
 
   onGetAccessToken = ({ oauth_token: token, oauth_token_secret: tokenSecret }) => {
     this.onSetLoggingIn(true);
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(()=> {
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
       const credential = firebase.auth.TwitterAuthProvider.credential(token, tokenSecret);
-      firebase.auth().signInWithCredential(credential).then().catch(error => {
+      firebase.auth().signInWithCredential(credential).then(
+        res => {
+          var db = firebase.firestore();
+          db.collection("users").doc(res.user.uid).set({
+            displayName: res.user.displayName,
+            email: res.user.email,
+            photoURL: res.user.photoURL,
+          })
+            .then(function () {
+              console.log("Document successfully written!");
+            })
+            .catch(function (error) {
+              console.error("Error writing document: ", error);
+            });
+        }
+      ).catch(error => {
         console.log(error);
         DeviceEventEmitter.emit('showToast', error.message);
         this.onSetLoggingIn(false);
