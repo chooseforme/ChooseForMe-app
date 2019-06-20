@@ -36,6 +36,7 @@ class ProfileScreen extends React.Component {
       <HomeHeader navigation={this.props.navigation}/>
       <Content>
         <Text>{firebase.auth().currentUser.displayName}</Text>
+        <Text>{firebase.auth().currentUser.email}</Text>
         <Image
           style={{ width: 50, height: 50 }}
           source={{ uri: firebase.auth().currentUser.photoURL }}

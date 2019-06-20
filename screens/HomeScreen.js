@@ -2,14 +2,17 @@ import React from "react";
 import { Image, View, ActivityIndicator, FlatList } from "react-native";
 import * as firebase from "firebase";
 import { connect } from "react-redux";
-import { setLoggingIn } from "../redux/app-redux";
+import { setLoggingIn, watchPublicPolls } from "../redux/app-redux";
 import { Header, Container, Content, Text, Button, List } from "native-base";
 import HomeHeader from "../components/common/HomeHeader";
 import PollCard from "../components/poll/pollcard";
 
+
 const mapStateToProps = state => {
   return {
-    loggingIn: state.loggingIn
+    loggingIn: state.loggingIn,
+    publicPolls: state.publicPolls,
+    refreshingPublicPolls: state.refreshingPublicPolls,
   };
 };
 
@@ -17,6 +20,9 @@ const mapDispatchToProps = dispatch => {
   return {
     setLoggingIn: logging => {
       dispatch(setLoggingIn(logging));
+    },
+    watchPublicPolls: () => {
+      dispatch(watchPublicPolls());
     }
   };
 };
@@ -26,70 +32,10 @@ class HomeScreen extends React.Component {
     super(props);
     this.state = {
       loggingIn: false,
-      pollsdata: [
-        {
-          id: 1,
-          multipleChoice: false,
-          reward: 10,
-          voted: true,
-          author: "IO",
-          createdAt: "today",
-          question: "Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!Help!!!",
-          totalVotes: 90,
-          options: [
-            { key: 1, option: "home", votes: 80, UserVoted: true },
-            { key: 2, option: "school31231", votes: 10, UserVoted: false }
-          ]
-        },
-        {
-          id: 2,
-          multipleChoice: true,
-          reward: 0.26,
-          voted: false,
-          author: "IO2",
-          createdAt: "yesterday",
-          question: "Help!!!Me!!!!!!!",
-          totalVotes: 2000,
-          options: [
-            { key: 1, option: "home", votes: 400, UserVoted: true },
-            { key: 2, option: "school", votes: 1000, UserVoted: false },
-            {
-              key: 3,
-              option: "idk go find it yourself ssssssssssssss",
-              votes: 600,
-              UserVoted: true
-            }
-          ]
-        },        
-        {
-          id: 3,
-          multipleChoice: false,
-          reward: 0.26,
-          voted: true,
-          author: "IO2",
-          createdAt: "yesterday",
-          question: "食屎定係飲尿好",
-          totalVotes: 2000,
-          options: [
-            { key: 1, option: "屎", votes: 400, UserVoted: true },
-            { key: 2, option: "尿", votes: 1000, UserVoted: false },
-            {
-              key: 3,
-              option: "why not both？",
-              votes: 600,
-              UserVoted: true
-            },        
-            {
-              key: 4,
-              option: "我全都要！！！！！！！！！！！！！！！！！！！！！！！！！！！！",
-              votes: 600,
-              UserVoted: true
-            }
-          ]
-        },
-        
-      ]
+      pollsdata: [],
+      isRefreshing: false,
     };
+    this.props.watchPublicPolls();
   }
 
   componentDidMount() {
@@ -97,32 +43,37 @@ class HomeScreen extends React.Component {
   }
 
   _renderRow = poll => {
+    //console.log(poll.item)
     return (
       <PollCard
-        multipleChoice={poll.item.multipleChoice}
-        reward={poll.item.reward}
-        author={poll.item.author}
-        createdAt={poll.item.createdAt}
-        question={poll.item.question}
-        options={poll.item.options}
-        totalVotes={poll.item.totalVotes}
-        voted={poll.item.voted}
+        poll={poll.item}
       />
     );
   };
 
   render() {
+    if (this.props.refreshingPublicPolls) {
+      return (
+        <Container>
+          <HomeHeader navigation={this.props.navigation} />
+            <ActivityIndicator size="large"/>
+        </Container>
+      )
+    }
+
     return (
       <Container>
         <HomeHeader navigation={this.props.navigation} />
-        <Content>
-            <FlatList
-              data={this.state.pollsdata}
-              renderItem={this._renderRow}
-              keyExtractor={item => item.id.toString()}
-              extraData={this.state}
-            />
-        </Content>
+          <FlatList
+            data={this.props.publicPolls}
+            renderItem={this._renderRow}
+            refreshing={this.props.refreshingPublicPolls}
+            onRefresh={()=>{
+              this.props.watchPublicPolls();
+            }}
+            keyExtractor={item => item.id.toString()}
+            extraData={this.state}
+          />
       </Container>
     );
   }

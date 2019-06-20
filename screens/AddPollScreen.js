@@ -25,7 +25,6 @@ import {
 import { Grid, Col, Row } from "react-native-easy-grid";
 import AppStyle from "../components/common/AppStyle";
 import * as firebase from "firebase";
-import '@firebase/firestore';
 
 
 class AddPollScreen extends Component {
@@ -38,6 +37,7 @@ class AddPollScreen extends Component {
       },
       openEnded: false,
       private: false,
+      multipleChoice: false,
     };
   }
 
@@ -62,9 +62,12 @@ class AddPollScreen extends Component {
       author: firebase.auth().currentUser.uid,
       private: this.state.private,
       openEnded: this.state.openEnded,
+      multipleChoice: this.state.multipleChoice,
+      reward:0,
       createdAt: Date.now(),
       question: this.state.question,
-      options: this.state.data.options
+      options: this.state.data.options,
+      votedUsers: [],
     })
       .then(function (docRef) {
         console.log("Document written with ID: ", docRef.id);
@@ -111,7 +114,7 @@ class AddPollScreen extends Component {
       <Item stackedLabel>
         <View style={{ flexDirection: "row" }}>
           <Left>
-            <Text style={{ fontSize: 14 }}>Options {option.index}</Text>
+            <Text style={{ fontSize: 14 }}>Options {option.index + 1}</Text>
           </Left>
           <Button
             transparent
@@ -174,6 +177,12 @@ class AddPollScreen extends Component {
               <CheckBox checked={this.state.openEnded} />
               <Body>
                 <Text>Open Ended</Text>
+              </Body>
+            </ListItem>
+            <ListItem selected={this.state.multipleChoice} onPress={() => { this.setState({ multipleChoice: !this.state.multipleChoice }) }}>
+              <CheckBox checked={this.state.multipleChoice} />
+              <Body>
+                <Text>Multiple Choice</Text>
               </Body>
             </ListItem>
             <FlatList
