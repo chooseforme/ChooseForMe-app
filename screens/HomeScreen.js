@@ -11,7 +11,8 @@ import PollCard from "../components/poll/pollcard";
 const mapStateToProps = state => {
   return {
     loggingIn: state.loggingIn,
-    publicPolls: state.publicPolls
+    publicPolls: state.publicPolls,
+    refreshingPublicPolls: state.refreshingPublicPolls,
   };
 };
 
@@ -20,7 +21,7 @@ const mapDispatchToProps = dispatch => {
     setLoggingIn: logging => {
       dispatch(setLoggingIn(logging));
     },
-    watchPublicPolls : () => {
+    watchPublicPolls: () => {
       dispatch(watchPublicPolls());
     }
   };
@@ -32,6 +33,7 @@ class HomeScreen extends React.Component {
     this.state = {
       loggingIn: false,
       pollsdata: [],
+      isRefreshing: false,
     };
     this.props.watchPublicPolls();
   }
@@ -40,54 +42,38 @@ class HomeScreen extends React.Component {
     this.props.setLoggingIn(false);
   }
 
-  _getAuthorName(uid) {
-    var db = firebase.firestore();
-    var docRef = db.collection("users").doc(uid);
-
-    docRef.get().then(function (doc) {
-      if (doc.exists) {
-        console.log("Document data:", doc.data().displayName);
-        return doc.data().displayName;
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-        return "unknown";
-      }
-    }).catch(function (error) {
-      console.log("Error getting document:", error);
-      return "unknown";
-    });
-
-  }
-
   _renderRow = poll => {
-    // console.log(poll)
+    //console.log(poll.item)
     return (
       <PollCard
-        multipleChoice={poll.item.multipleChoice}
-        reward={poll.item.reward}
-        author={poll.item.authorName}
-        createdAt={new Date(poll.item.createdAt).toLocaleDateString()}
-        question={poll.item.question}
-        options={poll.item.options}
-        totalVotes={poll.item.totalVotes}
-        voted={poll.item.voted}
+        poll={poll.item}
       />
     );
   };
 
   render() {
+    if (this.props.refreshingPublicPolls) {
+      return (
+        <Container>
+          <HomeHeader navigation={this.props.navigation} />
+            <ActivityIndicator size="large"/>
+        </Container>
+      )
+    }
+
     return (
       <Container>
         <HomeHeader navigation={this.props.navigation} />
-        <Content>
           <FlatList
             data={this.props.publicPolls}
             renderItem={this._renderRow}
+            refreshing={this.props.refreshingPublicPolls}
+            onRefresh={()=>{
+              this.props.watchPublicPolls();
+            }}
             keyExtractor={item => item.id.toString()}
             extraData={this.state}
           />
-        </Content>
       </Container>
     );
   }

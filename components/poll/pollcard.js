@@ -25,13 +25,15 @@ import {
 } from "native-base";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import ProgressBarAnimated from "react-native-progress-bar-animated";
-
+import * as firebase from "firebase";
+import { connect } from "react-redux";
+import { watchPublicPolls } from "../../redux/app-redux";
 const barColor = "#29a1a3";
 
-export default class pollCard extends Component {
+class pollCard extends Component {
   constructor(props) {
     super(props);
-    const data = this.props.options.map(item => {
+    const data = this.props.poll.options.map(item => {
       item.isSelect = false;
       item.selectedClass = styles.list;
       item.selectedButton = styles.button;
@@ -39,8 +41,48 @@ export default class pollCard extends Component {
     });
     this.state = {
       dataSource: data,
-      showOptions: false
+      showOptions: false,
+      optionVoted: [],
     };
+  }
+
+  componentDidMount() {
+    this._optionsVoted();
+  }
+
+  _submitVotes = () => {
+    selectedOptions = this.state.dataSource.filter((option) => {
+      return option.isSelect
+    })
+    var results = selectedOptions.map(option => option.id);
+    //console.log(results);
+    var db = firebase.firestore();
+    var voteRef = db.collection("polls").doc(this.props.poll.id);
+
+    var promises = [];
+    results.forEach((result) => {
+      promises.push(voteRef.update({
+        "votedUsers": firebase.firestore.FieldValue.arrayUnion({
+          userId: firebase.auth().currentUser.uid,
+          votedOption: result,
+        })
+      }).then(function () {
+        console.log("Document successfully updated!");
+      })
+        .catch(function (error) {
+          // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        }))
+    })
+
+    Promise.all(promises).then(
+      ()=>{
+        alert("voted!");
+        this.props.watchPublicPolls();
+      }
+    ).catch((error)=>{
+      console.log(error);
+    })
   }
 
   //render the options
@@ -64,7 +106,7 @@ export default class pollCard extends Component {
 
   _renderBottomFunctionButton = () => {
     //render bottom function button if not voted
-    if (!this.props.voted) {
+    if (!this._isVoted()) {
       return (
         <CardItem>
           <Left>
@@ -73,7 +115,7 @@ export default class pollCard extends Component {
             </Button>
           </Left>
           <Right>
-            <Button transparent small>
+            <Button transparent small onPress={() => { this._submitVotes() }}>
               <Icon name="md-send" style={{ color: "#1c253c" }} />
             </Button>
           </Right>
@@ -86,9 +128,9 @@ export default class pollCard extends Component {
     const index = this.state.dataSource.findIndex(
       item => data.item.id === item.id
     );
-    if (!this.props.multipleChoice) {
+    if (!this.props.poll.multipleChoice) {
       //singleChoice
-      this.state.dataSource.forEach(function(item, itemIndex) {
+      this.state.dataSource.forEach(function (item, itemIndex) {
         if (itemIndex == index) {
           item.isSelect = !item.isSelect;
           item.selectedClass = item.isSelect ? styles.selected : styles.list;
@@ -119,16 +161,41 @@ export default class pollCard extends Component {
     });
   };
 
-  _onOptionPress = option => {
-    alert(option.item.option);
-  };
+  //check it if it is voted
+  _isVoted = () => {
+    return this.props.poll.votedUsers.some(function (el) {
+      return el.userId === firebase.auth().currentUser.uid;
+    });
+  }
+
+  //get all voted options
+  _optionsVoted = () => {
+    var options = this.props.poll.votedUsers.filter((votedUser) => {
+      return votedUser.userId === firebase.auth().currentUser.uid;
+    }
+    )
+    this.setState({ optionVoted: options });
+  }
+
+  _isThisOptionVoted = (id) => {
+    return this.state.optionVoted.some(function (el) {
+      return el.votedOption === id;
+    });
+  }
+
+  _votesForOption = (id) => {
+    var count = this.props.poll.votedUsers.reduce(function (n, val) {
+      return n + (val.votedOption === id);
+    }, 0);
+    return count;
+  }
 
   //render each option
   _renderRow = option => {
     //if voted
-    if (this.props.voted) {
+    if (this._isVoted()) {
       //voted option
-      if (option.item.UserVoted) {
+      if (this._isThisOptionVoted(option.item.id)) {
         return (
           <View>
             <CardItem bordered style={styles.selected}>
@@ -137,7 +204,7 @@ export default class pollCard extends Component {
                   width={Dimensions.get("screen").width - 25}
                   height={30}
                   borderRadius={15}
-                  value={(option.item.votes / this.props.totalVotes) * 100}
+                  value={(this._votesForOption(option.item.id) / this.props.poll.votedUsers.length) * 100}
                   backgroundColor={barColor}
                 />
                 <Text
@@ -163,7 +230,7 @@ export default class pollCard extends Component {
                     paddingRight: 5
                   }}
                 >
-                  {option.item.votes}
+                  {this._votesForOption(option.item.id)}
                 </Text>
                 <Icon name="md-checkmark" style={styles.selectedButton} />
               </Right>
@@ -180,7 +247,7 @@ export default class pollCard extends Component {
                 width={Dimensions.get("screen").width - 25}
                 height={30}
                 borderRadius={15}
-                value={(option.item.votes / this.props.totalVotes) * 100}
+                value={(this._votesForOption(option.item.id) / this.props.poll.votedUsers.length) * 100}
                 backgroundColor={barColor}
               />
               <Text
@@ -206,7 +273,7 @@ export default class pollCard extends Component {
                   paddingRight: 5
                 }}
               >
-                {option.item.votes}
+                  {this._votesForOption(option.item.id)}
               </Text>
               <Icon name="md-checkmark" style={styles.button} />
             </Right>
@@ -259,13 +326,12 @@ export default class pollCard extends Component {
             <Thumbnail
               small
               source={{
-                uri:
-                  "https://cdn-profiles.tunein.com/s230250/images/bannerx.jpg?t=635652353820970000"
+                uri: this.props.poll.photoURL
               }}
             />
             <Body>
-              <Text>{this.props.author}</Text>
-              <Text note>{this.props.createdAt}</Text>
+              <Text>{this.props.poll.authorName}</Text>
+              <Text note>{new Date(this.props.poll.createdAt).toLocaleDateString()}</Text>
             </Body>
           </Left>
           <Right>
@@ -274,7 +340,7 @@ export default class pollCard extends Component {
               resizeMode="contain"
               style={{ width: 30, height: 20 }}
             />
-            <Text>{this.props.reward.toFixed(2)}</Text>
+            <Text>{this.props.poll.reward.toFixed(2)}</Text>
           </Right>
         </CardItem>
         <CardItem
@@ -287,11 +353,11 @@ export default class pollCard extends Component {
         >
           <Left style={{ flex: 0.9 }}>
             <Icon
-              name={this.props.multipleChoice ? "more" : "radio-button-on"}
+              name={this.props.poll.multipleChoice ? "more" : "radio-button-on"}
             />
             <Body>
               <Text style={{ fontWeight: "bold" }} numberOfLines={2}>
-                {this.props.question}
+                {this.props.poll.question}
               </Text>
             </Body>
           </Left>
@@ -332,3 +398,22 @@ const styles = StyleSheet.create({
     color: "#666666"
   }
 });
+
+const mapStateToProps = state => {
+  return {
+    publicPolls: state.publicPolls,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    watchPublicPolls: () => {
+      dispatch(watchPublicPolls());
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(pollCard);

@@ -66,7 +66,8 @@ class AddPollScreen extends Component {
       reward:0,
       createdAt: Date.now(),
       question: this.state.question,
-      options: this.state.data.options
+      options: this.state.data.options,
+      votedUsers: [],
     })
       .then(function (docRef) {
         console.log("Document written with ID: ", docRef.id);
@@ -79,7 +80,7 @@ class AddPollScreen extends Component {
 
   _addOption = () => {
     const newData = this.state.data;
-    newData.options.push({ id: Math.random().toString(36).substr(2, 9), votedUsers: [] });
+    newData.options.push({ id: Math.random().toString(36).substr(2, 9) });
     this.setState({
       data: newData
     });
