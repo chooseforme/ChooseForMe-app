@@ -53,42 +53,6 @@ const setRefreshingPublicPolls = (refreshing) => {
     }
 }
 
-const updateSpecificPoll = (pollId) => {
-    return function (dispatch) {
-        var db = firebase.firestore();
-        var pollRef = db.collection("polls").doc(pollId);
-        pollRef.get().then((polldoc) => {
-            var data = polldoc.data();
-            data.id = polldoc.id;
-            data.authorName = "unknown";
-            var promises = [];
-            var docRef = db.collection("users").doc(polldoc.data().author);
-            promises.push(
-                docRef.get().then((userdoc) => {
-                    if (userdoc.exists) {
-                        data.authorName = userdoc.data().displayName;
-                        data.photoURL = userdoc.data().photoURL;
-                    }
-                }
-                ).catch((error) => {
-                    console.log(error);
-                })
-            );
-            Promise.all(promises).then(()=>{
-                var pollsdata = store.getState().publicPolls;
-                const i = pollsdata.findIndex(_item => _item.id === data.id);
-                if (i > -1) pollsdata[i] = data;
-                else pollsdata.push(data);
-                dispatch(setPublicPolls(pollsdata));
-                console.log(store.getState().publicPolls);
-            }).catch((err)=>{console.log(err);})
-        }).catch((err)=>{
-            console.log(err);
-        })
-    }
-}
-
-
 const watchPublicPolls = () => {
     return function (dispatch) {
         dispatch(setRefreshingPublicPolls(true));
@@ -129,4 +93,4 @@ const watchPublicPolls = () => {
     }
 }
 
-export { setLoggingIn, setPublicPolls, watchPublicPolls, updateSpecificPoll };
+export { setLoggingIn, setPublicPolls, watchPublicPolls };
