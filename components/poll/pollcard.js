@@ -39,16 +39,21 @@ class pollCard extends Component {
       item.selectedButton = styles.button;
       return item;
     });
+
     this.state = {
       dataSource: data,
       showOptions: false,
-      optionVoted: [],
+      optionVoted: this._getVotedOptions(),
       publicPolls: [],
     };
   }
 
-  componentDidMount() {
-    this._optionsVoted();
+  _getVotedOptions = ()=>{
+    var options = this.props.poll.votedUsers.filter((votedUser) => {
+      return votedUser.userId === firebase.auth().currentUser.uid;
+    }
+    )
+    return options;
   }
 
   _submitVotes = () => {
@@ -87,8 +92,8 @@ class pollCard extends Component {
           item.selectedButton = styles.button;
           return item;
         });
+        this.setState({ optionVoted: this._getVotedOptions()});
         this.setState({dataSource:data});
-        this._optionsVoted();
       })
         .catch(function (error) {
           // The document probably doesn't exist.
@@ -144,6 +149,8 @@ class pollCard extends Component {
     }
   };
 
+
+  //UI: highlight the selected Item
   _selectItem = data => {
     const index = this.state.dataSource.findIndex(
       item => data.item.id === item.id
@@ -186,15 +193,6 @@ class pollCard extends Component {
     return this.props.poll.votedUsers.some(function (el) {
       return el.userId === firebase.auth().currentUser.uid;
     });
-  }
-
-  //get all voted options
-  _optionsVoted = () => {
-    var options = this.props.poll.votedUsers.filter((votedUser) => {
-      return votedUser.userId === firebase.auth().currentUser.uid;
-    }
-    )
-    this.setState({ optionVoted: options });
   }
 
   _isThisOptionVoted = (id) => {
