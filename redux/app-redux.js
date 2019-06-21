@@ -53,39 +53,39 @@ const setRefreshingPublicPolls = (refreshing) => {
     }
 }
 
-
-
 const watchPublicPolls = () => {
     return function (dispatch) {
         dispatch(setRefreshingPublicPolls(true));
-        var pollsdata = [];
         var db = firebase.firestore();
         db.collection("polls").get().then((querySnapshot) => {
+            var pollsdata = [];
             var promises = [];
             querySnapshot.forEach((doc) => {
                 var data = doc.data();
                 data.id = doc.id;
                 data.authorName = "unknown";
                 var docRef = db.collection("users").doc(doc.data().author);
-                promises.push(docRef.get().then((userdoc) => {
-                    if (userdoc.exists) {
-                        data.authorName = userdoc.data().displayName;
-                        data.photoURL = userdoc.data().photoURL;
-                        pollsdata.push(data);
+                promises.push(
+                    docRef.get().then((userdoc) => {
+                        if (userdoc.exists) {
+                            data.authorName = userdoc.data().displayName;
+                            data.photoURL = userdoc.data().photoURL;
+                            pollsdata.push(data);
+                        }
                     }
-                }
-                ).catch((error)=>{
-                    console.log(error);
-                }));
+                    ).catch((error) => {
+                        console.log(error);
+                    })
+                    );
             })
             Promise.all(promises).then(
-                ()=>{
-                  dispatch(setPublicPolls(pollsdata));
-                  dispatch(setRefreshingPublicPolls(false));
+                () => {
+                    dispatch(setPublicPolls(pollsdata));
+                    dispatch(setRefreshingPublicPolls(false));
                 }
-              ).catch((error)=>{
+            ).catch((error) => {
                 console.log(error);
-              })
+            })
 
         }).catch((error) => {
             console.log(error);
