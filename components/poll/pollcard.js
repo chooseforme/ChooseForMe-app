@@ -27,7 +27,7 @@ import { Col, Row, Grid } from "react-native-easy-grid";
 import ProgressBarAnimated from "react-native-progress-bar-animated";
 import * as firebase from "firebase";
 import { connect } from "react-redux";
-import { watchPublicPolls } from "../../redux/app-redux";
+import { watchPublicPolls, setPublicPolls } from "../../redux/app-redux";
 const barColor = "#29a1a3";
 
 class pollCard extends Component {
@@ -43,6 +43,7 @@ class pollCard extends Component {
       dataSource: data,
       showOptions: false,
       optionVoted: [],
+      publicPolls: [],
     };
   }
 
@@ -66,8 +67,28 @@ class pollCard extends Component {
           userId: firebase.auth().currentUser.uid,
           votedOption: result,
         })
-      }).then(function () {
+      }).then(()=> {
         console.log("Document successfully updated!");
+
+        //update poll locally
+        var polls = this.props.publicPolls;
+        votedPoll = polls.find((element)=>{
+          return element.id === this.props.poll.id;
+        });
+        votedPoll.votedUsers.push({
+          userId: firebase.auth().currentUser.uid,
+          votedOption: result,
+        }
+        )
+        this.props.setPublicPolls(polls);
+        const data = this.props.poll.options.map(item => {
+          item.isSelect = false;
+          item.selectedClass = styles.list;
+          item.selectedButton = styles.button;
+          return item;
+        });
+        this.setState({dataSource:data});
+        this._optionsVoted();
       })
         .catch(function (error) {
           // The document probably doesn't exist.
@@ -76,11 +97,10 @@ class pollCard extends Component {
     })
 
     Promise.all(promises).then(
-      ()=>{
-        alert("voted!");
-        this.props.watchPublicPolls();
+      () => {
+        //alert("voted!");
       }
-    ).catch((error)=>{
+    ).catch((error) => {
       console.log(error);
     })
   }
@@ -273,7 +293,7 @@ class pollCard extends Component {
                   paddingRight: 5
                 }}
               >
-                  {this._votesForOption(option.item.id)}
+                {this._votesForOption(option.item.id)}
               </Text>
               <Icon name="md-checkmark" style={styles.button} />
             </Right>
@@ -409,6 +429,9 @@ const mapDispatchToProps = dispatch => {
   return {
     watchPublicPolls: () => {
       dispatch(watchPublicPolls());
+    },
+    setPublicPolls: (polls)=>{
+      dispatch(setPublicPolls(polls));
     }
   };
 };
