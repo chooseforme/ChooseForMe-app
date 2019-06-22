@@ -93,4 +93,10 @@ const watchPublicPolls = () => {
     }
 }
 
+const createUser = (res) =>{
+    return function (dispatch) {
+        
+    }
+}
+
 export { setLoggingIn, setPublicPolls, watchPublicPolls };

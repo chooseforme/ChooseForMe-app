@@ -67,11 +67,13 @@ class pollCard extends Component {
 
     var promises = [];
     var polls = this.props.publicPolls;
+    var now = Date.now();
     results.forEach((result) => {
       promises.push(voteRef.update({
         "votedUsers": firebase.firestore.FieldValue.arrayUnion({
           userId: firebase.auth().currentUser.uid,
           votedOption: result,
+          votedAt: now,
         })
       }).then(() => {
         console.log("Document successfully updated!");
@@ -83,6 +85,7 @@ class pollCard extends Component {
         votedPoll.votedUsers.push({
           userId: firebase.auth().currentUser.uid,
           votedOption: result,
+          votedAt: now,
         }
         )
       })
@@ -360,7 +363,7 @@ class pollCard extends Component {
               resizeMode="contain"
               style={{ width: 30, height: 20 }}
             />
-            <Text>{this.props.poll.reward.toFixed(2)}</Text>
+            {/* <Text>{this.props.poll.reward.toFixed(2)}</Text> */}
           </Right>
         </CardItem>
         <CardItem

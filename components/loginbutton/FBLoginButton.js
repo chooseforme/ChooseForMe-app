@@ -51,7 +51,7 @@ class FBLoginButton extends Component {
           const credential = firebase.auth.FacebookAuthProvider.credential(token);
           firebase.auth().signInWithCredential(credential).then(res => {
             // user res, create your user, do whatever you want
-            console.log(res);
+            // console.log(res);
             var db = firebase.firestore();
             db.collection("users").doc(res.user.uid).set({
               displayName: res.user.displayName,
