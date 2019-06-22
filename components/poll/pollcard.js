@@ -48,7 +48,7 @@ class pollCard extends Component {
     };
   }
 
-  _getVotedOptions = ()=>{
+  _getVotedOptions = () => {
     var options = this.props.poll.votedUsers.filter((votedUser) => {
       return votedUser.userId === firebase.auth().currentUser.uid;
     }
@@ -66,18 +66,18 @@ class pollCard extends Component {
     var voteRef = db.collection("polls").doc(this.props.poll.id);
 
     var promises = [];
+    var polls = this.props.publicPolls;
     results.forEach((result) => {
       promises.push(voteRef.update({
         "votedUsers": firebase.firestore.FieldValue.arrayUnion({
           userId: firebase.auth().currentUser.uid,
           votedOption: result,
         })
-      }).then(()=> {
+      }).then(() => {
         console.log("Document successfully updated!");
 
         //update poll locally
-        var polls = this.props.publicPolls;
-        votedPoll = polls.find((element)=>{
+        votedPoll = polls.find((element) => {
           return element.id === this.props.poll.id;
         });
         votedPoll.votedUsers.push({
@@ -85,15 +85,6 @@ class pollCard extends Component {
           votedOption: result,
         }
         )
-        this.props.setPublicPolls(polls);
-        const data = this.props.poll.options.map(item => {
-          item.isSelect = false;
-          item.selectedClass = styles.list;
-          item.selectedButton = styles.button;
-          return item;
-        });
-        this.setState({ optionVoted: this._getVotedOptions()});
-        this.setState({dataSource:data});
       })
         .catch(function (error) {
           // The document probably doesn't exist.
@@ -103,7 +94,18 @@ class pollCard extends Component {
 
     Promise.all(promises).then(
       () => {
-        //alert("voted!");
+        console.log("voted!");
+        this.props.setPublicPolls(polls);
+        const data = this.props.poll.options.map(item => {
+          item.isSelect = false;
+          item.selectedClass = styles.list;
+          item.selectedButton = styles.button;
+          return item;
+        });
+        this.setState({
+          optionVoted: this._getVotedOptions(),
+          dataSource: data
+        });
       }
     ).catch((error) => {
       console.log(error);
@@ -428,7 +430,7 @@ const mapDispatchToProps = dispatch => {
     watchPublicPolls: () => {
       dispatch(watchPublicPolls());
     },
-    setPublicPolls: (polls)=>{
+    setPublicPolls: (polls) => {
       dispatch(setPublicPolls(polls));
     }
   };
