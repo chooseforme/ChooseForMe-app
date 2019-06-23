@@ -2,14 +2,18 @@ import React from "react";
 import { Image, View, ActivityIndicator, FlatList } from "react-native";
 import * as firebase from "firebase";
 import { connect } from "react-redux";
-import { setLoggingIn } from "../redux/app-redux";
+import { setLoggingIn, refreshPublicPolls, loadPublicPolls } from "../redux/app-redux";
 import { Header, Container, Content, Text, Button, List } from "native-base";
 import HomeHeader from "../components/common/HomeHeader";
 import PollCard from "../components/poll/pollcard";
 
+
 const mapStateToProps = state => {
   return {
-    loggingIn: state.loggingIn
+    loggingIn: state.loggingIn,
+    publicPolls: state.publicPolls,
+    loadingPublicPolls: state.loadingPublicPolls,
+    refreshingPublicPolls: state.refreshingPublicPolls,
   };
 };
 
@@ -17,6 +21,12 @@ const mapDispatchToProps = dispatch => {
   return {
     setLoggingIn: logging => {
       dispatch(setLoggingIn(logging));
+    },
+    refreshPublicPolls: () => {
+      dispatch(refreshPublicPolls());
+    },
+    loadPublicPolls:()  =>{
+      dispatch(loadPublicPolls());
     }
   };
 };
@@ -26,9 +36,10 @@ class PublicScreen extends React.Component {
     super(props);
     this.state = {
       loggingIn: false,
-      pollsdata: [
-      ]
+      pollsdata: [],
+      isRefreshing: false,
     };
+    this.props.refreshPublicPolls();
   }
 
   componentDidMount() {
@@ -36,32 +47,42 @@ class PublicScreen extends React.Component {
   }
 
   _renderRow = poll => {
+    //console.log(poll.item)
     return (
       <PollCard
-        multipleChoice={poll.item.multipleChoice}
-        reward={poll.item.reward}
-        author={poll.item.author}
-        createdAt={poll.item.createdAt}
-        question={poll.item.question}
-        options={poll.item.options}
-        totalVotes={poll.item.totalVotes}
-        voted={poll.item.voted}
+        poll={poll.item}
       />
     );
   };
 
   render() {
+    if (this.props.refreshingPublicPolls) {
+      return (
+        <Container>
+          <HomeHeader navigation={this.props.navigation} />
+            <ActivityIndicator size="large"/>
+        </Container>
+      )
+    }
+
     return (
       <Container>
         <HomeHeader navigation={this.props.navigation} />
-        <Content>
-            <FlatList
-              data={this.state.pollsdata}
-              renderItem={this._renderRow}
-              keyExtractor={item => item.id.toString()}
-              extraData={this.state}
-            />
-        </Content>
+          <FlatList
+            data={this.props.publicPolls}
+            renderItem={this._renderRow}
+            refreshing={this.props.refreshingPublicPolls}
+            onRefresh={()=>{
+              this.props.refreshPublicPolls();
+            }}
+            loading={this.props.loadingPublicPolls}
+            onEndReached={()=>{
+            this.props.loadPublicPolls()}
+          }
+            onEndReachedThreshold={0.1}
+            keyExtractor={item => item.id.toString()}
+            extraData={this.props.poll}
+          />
       </Container>
     );
   }

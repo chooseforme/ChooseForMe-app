@@ -55,13 +55,13 @@ export default class HomeHeader extends Component {
         </Button>
       );
     }
-    if(this.props.navigation.state.routeName == "Home" || this.props.navigation.state.routeName == "Public"){
-      return (
-        <Button transparent>
-          <Icon name="ios-notifications" style={{ color: "#1c253c" }} />
-        </Button>
-      );
-    }
+    // if(this.props.navigation.state.routeName == "Home" || this.props.navigation.state.routeName == "Public"){
+    //   return (
+    //     <Button transparent>
+    //       <Icon name="ios-notifications" style={{ color: "#1c253c" }} />
+    //     </Button>
+    //   );
+    // }
   }
 
   render() {

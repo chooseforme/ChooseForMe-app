@@ -48,6 +48,33 @@ class pollCard extends Component {
     };
   }
 
+  timeDifference =(previous) => {
+
+    var msPerMinute = 60 * 1000;
+    var msPerHour = msPerMinute * 60;
+    var msPerDay = msPerHour * 24;
+    var msPerMonth = msPerDay * 30;
+    var msPerYear = msPerDay * 365;
+
+    var elapsed = Date.now() - previous;
+
+    if (elapsed < msPerMinute) {
+         return Math.round(elapsed/1000) + ' seconds ago';   
+    }
+
+    else if (elapsed < msPerHour) {
+         return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+    }
+
+    else if (elapsed < msPerDay ) {
+         return Math.round(elapsed/msPerHour ) + ' hours ago';   
+    }
+
+    else{
+        return new Date(previous).toLocaleDateString(); 
+    }
+}
+
   _getVotedOptions = () => {
     var options = this.props.poll.votedUsers.filter((votedUser) => {
       return votedUser.userId === firebase.auth().currentUser.uid;
@@ -155,7 +182,7 @@ class pollCard extends Component {
         <CardItem>
           <Left>
             <Button transparent small>
-              <Icon name="create" style={{ color: "#1c253c" }} />
+              <Icon name="ios-chatbubbles" style={{ color: "#1c253c" }} />
             </Button>
           </Left>
           <Right>
@@ -171,7 +198,7 @@ class pollCard extends Component {
         <CardItem>
           <Left>
             <Button transparent small>
-              <Icon name="create" style={{ color: "#1c253c" }} />
+              <Icon name="ios-chatbubbles" style={{ color: "#1c253c" }} />
             </Button>
           </Left>
           <Right>
@@ -381,7 +408,7 @@ class pollCard extends Component {
             />
             <Body>
               <Text>{this.props.poll.authorName}</Text>
-              <Text note>{new Date(this.props.poll.createdAt).toLocaleDateString()}</Text>
+              <Text note>{this.timeDifference(this.props.poll.createdAt)}</Text>
             </Body>
           </Left>
           <Right>
