@@ -155,7 +155,7 @@ class pollCard extends Component {
         <CardItem>
           <Left>
             <Button transparent small>
-              <Icon name="create" style={{ color: "#1c253c" }} />
+              <Icon name="ios-chatbubbles" style={{ color: "#1c253c" }} />
             </Button>
           </Left>
           <Right>
@@ -171,7 +171,7 @@ class pollCard extends Component {
         <CardItem>
           <Left>
             <Button transparent small>
-              <Icon name="create" style={{ color: "#1c253c" }} />
+              <Icon name="ios-chatbubbles" style={{ color: "#1c253c" }} />
             </Button>
           </Left>
           <Right>

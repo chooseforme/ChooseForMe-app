@@ -6,8 +6,8 @@ import {
 } from "react-navigation";
 import { Icon } from "native-base";
 import TabBarIcon from "../components/TabBarIcon";
-import HomeScreen from "../screens/HomeScreen";
 import PublicScreen from "../screens/PublicScreen";
+import TrendingScreen from "../screens/TrendingScreen";
 import AddPollScreen from "../screens/AddPollScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -16,31 +16,32 @@ import TabBar from "../components/TabBar";
 const activeTintColor = "#29a1a3";
 const inactiveTintColor =  "#1c253c";
 
-const HomeStack = createStackNavigator(
+const PublicStack = createStackNavigator(
   {
-    Home: HomeScreen
+    Public: PublicScreen
   },
   {
-    initialRouteName: "Home",
+    initialRouteName: "Public",
     headerMode: "none"
   }
 );
 
-HomeStack.navigationOptions = {
+PublicStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
-    <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-contacts" />
+    <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-radio" />
   )
 };
 
-const PollStack = createStackNavigator({
+const AddPollStack = createStackNavigator({
   Poll: AddPollScreen
 },
 {
   headerMode: "none"
 });
 
-PollStack.navigationOptions = {
-  tabBarIcon: ({ focused }) => <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-open" />
+AddPollStack.navigationOptions = {
+  tabBarIcon: ({ focused }) => 
+  <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="add-circle" />
 };
 
 const SettingsStack = createStackNavigator({
@@ -56,15 +57,16 @@ SettingsStack.navigationOptions = {
   )
 };
 
-const PublicStack = createStackNavigator({
-  Public: PublicScreen
+const TrendingStack = createStackNavigator({
+  Hot: TrendingScreen
 },
 {
   headerMode: "none"
 });
 
-PublicStack.navigationOptions = {
-  tabBarIcon: ({ focused }) => <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-radio" />
+TrendingStack.navigationOptions = {
+  tabBarIcon: ({ focused }) => 
+  <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-flame" />
 };
 
 const ProfileStack = createStackNavigator({
@@ -80,25 +82,25 @@ ProfileStack.navigationOptions = {
   )
 };
 
-const ChatStack = createStackNavigator({
-  Chat: SettingsScreen
+const SearchStack = createStackNavigator({
+  Search: SettingsScreen
 },
 {
   headerMode: "none"
 });
 
-ChatStack.navigationOptions = {
+SearchStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
-    <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-chatbubbles" />
+    <Icon style={{ color: focused ? activeTintColor : inactiveTintColor }} name="ios-search" />
   )
 };
 
 export default createBottomTabNavigator(
   {
-    HomeStack: HomeStack,
+    TrendingStack: TrendingStack,
     PublicStack: PublicStack,
-    PollStack: PollStack,
-    ChatStack: ChatStack,
+    AddPollStack: AddPollStack, //add poll
+    SearchStack: SearchStack,
     ProfileStack: ProfileStack
   },
   {
