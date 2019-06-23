@@ -10,7 +10,7 @@ import {
 import * as firebase from 'firebase';
 import { Button, Text } from 'native-base';
 import { connect } from 'react-redux';
-import { setLoggingIn } from '../../redux/app-redux';
+import { setLoggingIn , createUser} from '../../redux/app-redux';
 
 
 
@@ -22,7 +22,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setLoggingIn: (logging) => { dispatch(setLoggingIn(logging)) }
+    setLoggingIn: (logging) => { dispatch(setLoggingIn(logging)) },
+    createUser: (res)=>{dispatch(createUser(res))},
   };
 }
 
@@ -45,18 +46,7 @@ class TwitterLoginButton extends React.Component {
       const credential = firebase.auth.TwitterAuthProvider.credential(token, tokenSecret);
       firebase.auth().signInWithCredential(credential).then(
         res => {
-          var db = firebase.firestore();
-          db.collection("users").doc(res.user.uid).set({
-            displayName: res.user.displayName,
-            email: res.user.email,
-            photoURL: res.user.photoURL,
-          })
-            .then(function () {
-              console.log("Document successfully written!");
-            })
-            .catch(function (error) {
-              console.error("Error writing document: ", error);
-            });
+          this.props.createUser(res);
         }
       ).catch(error => {
         console.log(error);

@@ -4,7 +4,7 @@ import SignInWithFacebook from '../../utils/signInWithFacebook';
 import { Text } from 'native-base';
 import * as firebase from 'firebase';
 import { connect } from 'react-redux';
-import { setLoggingIn } from '../../redux/app-redux';
+import { setLoggingIn, createUser } from '../../redux/app-redux';
 
 
 const mapStateToProps = (state) => {
@@ -15,7 +15,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setLoggingIn: (logging) => { dispatch(setLoggingIn(logging)) }
+    setLoggingIn: (logging) => { dispatch(setLoggingIn(logging)) },
+    createUser: (res)=>{dispatch(createUser(res))},
   };
 }
 
@@ -52,18 +53,7 @@ class FBLoginButton extends Component {
           firebase.auth().signInWithCredential(credential).then(res => {
             // user res, create your user, do whatever you want
             // console.log(res);
-            var db = firebase.firestore();
-            db.collection("users").doc(res.user.uid).set({
-              displayName: res.user.displayName,
-              email: res.user.providerData[0].email,
-              photoURL: res.user.photoURL,
-          },{ merge: true})
-          .then(function() {
-              console.log("Document successfully written!");
-          })
-          .catch(function(error) {
-              console.error("Error writing document: ", error);
-          });
+            this.props.createUser(res);
           
           })
             .catch(error => {

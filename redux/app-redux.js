@@ -80,7 +80,7 @@ const refreshPublicPolls = () => {
         var db = firebase.firestore();
         db.collection("polls")
             .orderBy("createdAt")
-            .limit(5)
+            .limit(10)
             .get()
             .then((querySnapshot) => {
                 var lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
@@ -122,17 +122,17 @@ const refreshPublicPolls = () => {
 
 const loadPublicPolls = () => {
     return function (dispatch, getState) {
-        if(getState().lastVisible == undefined){
+        if (getState().lastVisible == undefined) {
             return;
         }
-        if(getState().loadingPublicPolls){
+        if (getState().loadingPublicPolls) {
             return;
         }
         dispatch(setLoadingPublicPolls(true));
         var db = firebase.firestore();
         db.collection("polls")
             .orderBy("createdAt")
-            .limit(5)
+            .limit(10)
             .startAfter(getState().lastVisible)
             .get()
             .then((querySnapshot) => {
@@ -178,8 +178,49 @@ const loadPublicPolls = () => {
 
 const createUser = (res) => {
     return function (dispatch) {
-
+        var db = firebase.firestore();
+        var userRef = db.collection("users").doc(res.user.uid);
+        userRef.get().then(
+            (doc) => {
+                if (!doc.exists) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+        ).then((docExist) => {
+            if (docExist) {
+                userRef.set({
+                    email: res.user.providerData[0].email,
+                    photoURL: res.user.photoURL,
+                }, { merge: true })
+                    .then(function () {
+                        console.log("User successfully updated!");
+                    })
+                    .catch(function (error) {
+                        console.error("Error when updating user: ", error);
+                    });
+            }
+            else {
+                userRef.set({
+                    displayName: res.user.displayName,
+                    email: res.user.providerData[0].email,
+                    photoURL: res.user.photoURL,
+                    createdAt: Date.now(),
+                }, { merge: true })
+                    .then(function () {
+                        console.log("User successfully Created!");
+                    })
+                    .catch(function (error) {
+                        console.error("Error when creating user: ", error);
+                    });
+            }
+        }
+        ).catch((error) => {
+            console.log(error);
+        })
     }
 }
 
-export { setLoggingIn, setPublicPolls, refreshPublicPolls, loadPublicPolls };
+export { setLoggingIn, setPublicPolls, refreshPublicPolls, loadPublicPolls , createUser};

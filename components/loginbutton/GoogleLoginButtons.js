@@ -3,7 +3,7 @@ import { View, TouchableOpacity,DeviceEventEmitter, Alert  } from 'react-native'
 import { Text } from 'native-base';
 import * as firebase from 'firebase';
 import { connect } from 'react-redux';
-import { setLoggingIn } from '../../redux/app-redux';
+import { setLoggingIn , createUser} from '../../redux/app-redux';
 
 
 const mapStateToProps = (state) => {
@@ -14,7 +14,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setLoggingIn: (logging) => { dispatch(setLoggingIn(logging)) }
+    setLoggingIn: (logging) => { dispatch(setLoggingIn(logging)) },
+    createUser: (res)=>{dispatch(createUser(res))},
   };
 }
 
@@ -29,7 +30,7 @@ class GoogleLoginButton extends Component {
     this.props.setLoggingIn(loggingin);
   }
 
-  async _loginWithGoogle() {
+  async _loginWithGoogle(){
     this.onSetLoggingIn(true);
     try {
       const result = await Expo.Google.logInAsync({
@@ -39,26 +40,14 @@ class GoogleLoginButton extends Component {
       });
   
       if (result.type === "success") {
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function(){
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(()=>{
         const { idToken, accessToken } = result;
         const credential = firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
         firebase
           .auth()
           .signInWithCredential(credential)
           .then(res => {
-            // user res, create your user, do whatever you want
-            var db = firebase.firestore();
-            db.collection("users").doc(res.user.uid).set({
-              displayName: res.user.displayName,
-              email: res.user.email,
-              photoURL: res.user.photoURL,
-          })
-          .then(function() {
-              console.log("Document successfully written!");
-          })
-          .catch(function(error) {
-              console.error("Error writing document: ", error);
-          });
+              this.props.createUser(res);
           })
           .catch(error => {
             DeviceEventEmitter.emit('showToast', error.message);
