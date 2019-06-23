@@ -32,7 +32,7 @@ class LoginScreen extends React.Component {
         header: null,
     };
 
-    componentWillMount() {
+    componentDidMount() {
         // Add listener here
         this.unsubscribe = firebase.auth().onAuthStateChanged(user => {
             if (!user) {

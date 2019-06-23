@@ -32,7 +32,7 @@ export default class App extends React.Component {
   }
   componentDidMount() {
     this.listener = DeviceEventEmitter.addListener("showToast", text => {
-      this.refs.toast.show(text, 5000);
+      this.refs.toast.show(text, 3000);
     });
   }
 

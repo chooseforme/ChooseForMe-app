@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, FlatList, Image, Platform } from "react-native";
+import { View, FlatList, Image, Platform, DeviceEventEmitter } from "react-native";
 import {
   Header,
   Container,
@@ -25,7 +25,8 @@ import {
 import { Grid, Col, Row } from "react-native-easy-grid";
 import AppStyle from "../components/common/AppStyle";
 import * as firebase from "firebase";
-
+import { connect } from "react-redux";
+import { refreshPublicPolls } from "../redux/app-redux";
 
 class AddPollScreen extends Component {
   constructor(props) {
@@ -35,52 +36,72 @@ class AddPollScreen extends Component {
       data: {
         options: []
       },
-      openEnded: false,
-      private: false,
       multipleChoice: false,
     };
   }
 
   componentDidMount() {
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 2; i++) {
       this._addOption();
     }
   }
 
-  // _getOptions = ()=> {
-  //   var newOptions = [];
-  //   this.state.data.options.forEach((option)=>{
-  //     console.log(option.option);
-  //     newOptions.push(option.option);
-  //   })
-  //   return newOptions;
-  // }
-
   _addPoll = () => {
+    const newData = this.state.data;
+    if (newData.options.length < 2) {
+      DeviceEventEmitter.emit('showToast', "you need to have at least 2 options!");
+      return;
+    }
+    if (this.state.question.length >= 40 || this.state.question.length <= 6) {
+      DeviceEventEmitter.emit('showToast', "The length of question must between 6 to 40");
+      return;
+    }
+    // console.log(newData.options);
+    for(option in newData.options) {
+      if (newData.options[option].option.length >= 40 || newData.options[option].option.length <= 6) {
+        DeviceEventEmitter.emit('showToast', "The length of option must between 6 to 40");
+        return;
+      }
+    }
     var db = firebase.firestore();
     db.collection("polls").add({
       author: firebase.auth().currentUser.uid,
-      private: this.state.private,
-      openEnded: this.state.openEnded,
       multipleChoice: this.state.multipleChoice,
-      reward:0,
+      dailyTrending: 0,
       createdAt: Date.now(),
       question: this.state.question,
       options: this.state.data.options,
       votedUsers: [],
     })
-      .then(function (docRef) {
+      .then((docRef)=> {
         console.log("Document written with ID: ", docRef.id);
+        this.setState(
+          {
+            question: "",
+            data: {
+              options: []
+            },
+            multipleChoice: false,
+          }
+        )
+        this.props.refreshPublicPolls();
+        DeviceEventEmitter.emit('showToast', "You started a poll successfully!");
+        for (var i = 0; i < 2; i++) {
+          this._addOption();
+        }
       })
       .catch(function (error) {
         console.error("Error adding document: ", error);
       });
-
   }
 
   _addOption = () => {
     const newData = this.state.data;
-    newData.options.push({ id: Math.random().toString(36).substr(2, 9) });
+    if (newData.options.length >= 5) {
+      DeviceEventEmitter.emit('showToast', "you cant add more than 5 options!");
+      return;
+    }
+    newData.options.push({ id: Math.random().toString(36).substr(2, 9), option: "" });
     this.setState({
       data: newData
     });
@@ -108,7 +129,7 @@ class AddPollScreen extends Component {
     });
   }
 
-  
+
   _renderRow = option => {
     return (
       <Item stackedLabel>
@@ -128,8 +149,8 @@ class AddPollScreen extends Component {
         </View>
         <Input
           placeholder="Your option here..."
-          onChangeText={q => this._editOption(option,q)}
-          />
+          onChangeText={q => this._editOption(option, q)}
+        />
       </Item>
     );
   };
@@ -167,18 +188,6 @@ class AddPollScreen extends Component {
                 onChangeText={q => this.setState({ question: q })}
                 value={this.state.question} />
             </Item>
-            <ListItem selected={this.state.private} onPress={() => { this.setState({ private: !this.state.private }) }}>
-              <CheckBox checked={this.state.private} />
-              <Body>
-                <Text>Private</Text>
-              </Body>
-            </ListItem>
-            <ListItem selected={this.state.openEnded} onPress={() => { this.setState({ openEnded: !this.state.openEnded }) }}>
-              <CheckBox checked={this.state.openEnded} />
-              <Body>
-                <Text>Open Ended</Text>
-              </Body>
-            </ListItem>
             <ListItem selected={this.state.multipleChoice} onPress={() => { this.setState({ multipleChoice: !this.state.multipleChoice }) }}>
               <CheckBox checked={this.state.multipleChoice} />
               <Body>
@@ -211,4 +220,22 @@ class AddPollScreen extends Component {
   }
 }
 
-export default AddPollScreen;
+
+const mapStateToProps = state => {
+  return {
+    publicPolls: state.publicPolls,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    refreshPublicPolls: () => {
+      dispatch(refreshPublicPolls());
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddPollScreen);
