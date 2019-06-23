@@ -79,7 +79,7 @@ const refreshPublicPolls = () => {
         dispatch(setLastVisible(null));
         var db = firebase.firestore();
         db.collection("polls")
-            .orderBy("createdAt")
+            .orderBy("createdAt", "desc")
             .limit(10)
             .get()
             .then((querySnapshot) => {
@@ -88,6 +88,7 @@ const refreshPublicPolls = () => {
                 var pollsdata = [];
                 var promises = [];
                 querySnapshot.forEach((doc) => {
+                    console.log(doc.data().createdAt);
                     var data = doc.data();
                     data.id = doc.id;
                     data.authorName = "unknown";
@@ -107,6 +108,16 @@ const refreshPublicPolls = () => {
                 })
                 Promise.all(promises).then(
                     () => {
+                        pollsdata.sort((a,b)=>{
+                            if (a.createdAt > b.createdAt) {
+                                return -1;
+                              }
+                              if (a.createdAt < b.createdAt) {
+                                return 1;
+                              }
+                              // a must be equal to b
+                              return 0;
+                        })
                         dispatch(setPublicPolls(pollsdata));
                         dispatch(setRefreshingPublicPolls(false));
                     }
@@ -131,8 +142,8 @@ const loadPublicPolls = () => {
         dispatch(setLoadingPublicPolls(true));
         var db = firebase.firestore();
         db.collection("polls")
-            .orderBy("createdAt")
-            .limit(10)
+            .orderBy("createdAt", "desc")
+            .limit(1)
             .startAfter(getState().lastVisible)
             .get()
             .then((querySnapshot) => {
@@ -160,8 +171,17 @@ const loadPublicPolls = () => {
                 })
                 Promise.all(promises).then(
                     () => {
+                        pollsdata.sort((a,b)=>{
+                            if (a.createdAt > b.createdAt) {
+                                return -1;
+                              }
+                              if (a.createdAt < b.createdAt) {
+                                return 1;
+                              }
+                              // a must be equal to b
+                              return 0;
+                        })
                         dispatch(setPublicPolls(pollsdata));
-
                         dispatch(setLoadingPublicPolls(false));
                     }
                 ).catch((error) => {
