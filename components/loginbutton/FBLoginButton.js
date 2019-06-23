@@ -57,7 +57,7 @@ class FBLoginButton extends Component {
               displayName: res.user.displayName,
               email: res.user.providerData[0].email,
               photoURL: res.user.photoURL,
-          })
+          },{ merge: true})
           .then(function() {
               console.log("Document successfully written!");
           })

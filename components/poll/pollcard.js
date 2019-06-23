@@ -27,7 +27,7 @@ import { Col, Row, Grid } from "react-native-easy-grid";
 import ProgressBarAnimated from "react-native-progress-bar-animated";
 import * as firebase from "firebase";
 import { connect } from "react-redux";
-import { watchPublicPolls, setPublicPolls } from "../../redux/app-redux";
+import { refreshPublicPolls, setPublicPolls } from "../../redux/app-redux";
 const barColor = "#29a1a3";
 
 class pollCard extends Component {
@@ -69,14 +69,14 @@ class pollCard extends Component {
     var polls = this.props.publicPolls;
     var now = Date.now();
     results.forEach((result) => {
-      promises.push(voteRef.update({
+      promises.push(voteRef.set({
         "votedUsers": firebase.firestore.FieldValue.arrayUnion({
           userId: firebase.auth().currentUser.uid,
           votedOption: result,
           votedAt: now,
         })
-      }).then(() => {
-        console.log("Document successfully updated!");
+      }, { merge: true }).then(() => {
+        console.log("added user to vote!");
 
         //update poll locally
         votedPoll = polls.find((element) => {
@@ -94,6 +94,20 @@ class pollCard extends Component {
           console.error("Error updating document: ", error);
         }))
     })
+    promises.push(db.collection("users").doc(firebase.auth().currentUser.uid).set({
+      votedPolls : firebase.firestore.FieldValue.arrayUnion({
+        pollId: this.props.poll.id,
+        votedAt: now,
+      })
+    }, { merge: true })
+      .then(function () {
+        console.log("added vote to user!");
+      })
+      .catch(function (error) {
+        console.error("Error writing document: ", error);
+      }));
+
+
 
     Promise.all(promises).then(
       () => {
@@ -151,6 +165,19 @@ class pollCard extends Component {
           </Right>
         </CardItem>
       );
+    }
+    else{
+      return (
+        <CardItem>
+          <Left>
+            <Button transparent small>
+              <Icon name="create" style={{ color: "#1c253c" }} />
+            </Button>
+          </Left>
+          <Right>
+          </Right>
+        </CardItem>
+      )
     }
   };
 
@@ -430,8 +457,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    watchPublicPolls: () => {
-      dispatch(watchPublicPolls());
+    refreshPublicPolls: () => {
+      dispatch(refreshPublicPolls());
     },
     setPublicPolls: (polls) => {
       dispatch(setPublicPolls(polls));

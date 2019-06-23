@@ -25,7 +25,8 @@ import {
 import { Grid, Col, Row } from "react-native-easy-grid";
 import AppStyle from "../components/common/AppStyle";
 import * as firebase from "firebase";
-
+import { connect } from "react-redux";
+import { refreshPublicPolls } from "../redux/app-redux";
 
 class AddPollScreen extends Component {
   constructor(props) {
@@ -83,7 +84,8 @@ class AddPollScreen extends Component {
             multipleChoice: false,
           }
         )
-        DeviceEventEmitter.emit('showToast', "You started a poll succesfully!");
+        this.props.refreshPublicPolls();
+        DeviceEventEmitter.emit('showToast', "You started a poll successfully!");
         for (var i = 0; i < 2; i++) {
           this._addOption();
         }
@@ -218,4 +220,22 @@ class AddPollScreen extends Component {
   }
 }
 
-export default AddPollScreen;
+
+const mapStateToProps = state => {
+  return {
+    publicPolls: state.publicPolls,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    refreshPublicPolls: () => {
+      dispatch(refreshPublicPolls());
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddPollScreen);
