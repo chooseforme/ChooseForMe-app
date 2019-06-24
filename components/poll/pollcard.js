@@ -103,7 +103,7 @@ class pollCard extends Component {
           votedAt: now,
         })
       }, { merge: true }).then(() => {
-        console.log("added user to vote!");
+        //console.log("added user to vote!");
 
         //update poll locally
         votedPoll = polls.find((element) => {
@@ -128,7 +128,7 @@ class pollCard extends Component {
       })
     }, { merge: true })
       .then(function () {
-        console.log("added vote to user!");
+        // console.log("added vote to user!");
       })
       .catch(function (error) {
         console.error("Error writing document: ", error);
