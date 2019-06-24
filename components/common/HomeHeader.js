@@ -69,7 +69,7 @@ export default class HomeHeader extends Component {
       <View>
         <Header hasTabs style={AppStyle.headerLight}>
           <Left style={{ flex: 1 }} />
-          <Body style={{ flex: 1 }}>{this._renderIcon()}</Body>
+          <Body style={{ flex: 1, justifyContent: 'center', alignItems: 'center'  }}>{this._renderIcon()}</Body>
           <Right style={{ flex: 1 }}>
             {this._renderRightButton()}
           </Right>

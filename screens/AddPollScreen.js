@@ -203,7 +203,7 @@ class AddPollScreen extends Component {
           </Form>
         </Content>
         <Footer>
-          <FooterTab>
+          <FooterTab style={AppStyle.footerLight}>
             <Button
               transparent
               full
