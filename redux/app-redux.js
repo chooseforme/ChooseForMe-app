@@ -88,7 +88,6 @@ const refreshPublicPolls = () => {
                 var pollsdata = [];
                 var promises = [];
                 querySnapshot.forEach((doc) => {
-                    console.log(doc.data().createdAt);
                     var data = doc.data();
                     data.id = doc.id;
                     data.authorName = "unknown";
