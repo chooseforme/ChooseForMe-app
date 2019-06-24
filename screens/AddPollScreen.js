@@ -68,6 +68,7 @@ class AddPollScreen extends Component {
       author: firebase.auth().currentUser.uid,
       multipleChoice: this.state.multipleChoice,
       dailyTrending: 0,
+      monthlyTrending: 0,
       createdAt: Date.now(),
       question: this.state.question,
       options: this.state.data.options,
